@@ -1,0 +1,15 @@
+{
+  "name": "imagecraft",
+  "private": true,
+  "description": "An approachable RHEL image mode guide and recipe workbench",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node server.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "validate": "node scripts/validate.cjs",
+    "check": "npm test && npm run validate"
+  },
+  "devDependencies": {
+    "yaml": "2.9.1"
+  }
+}
