@@ -4,6 +4,8 @@
 
 A friendly guide and workbench for choosing packages, arranging changes, and downloading a ready-to-review recipe. No account needed; your recipe stays in your browser.
 
+**Independent and unaffiliated:** Imagecraft is not affiliated with, endorsed by, or sponsored by Red Hat. It is not a Red Hat product.
+
 ## ✨ Use it online
 
 **[Open Imagecraft →](https://imagecraft.graa.dev/)**
@@ -12,17 +14,17 @@ A friendly guide and workbench for choosing packages, arranging changes, and dow
 2. Add packages, commands, and services; drag them into order.
 3. Review and download your Containerfile and build workflow.
 
-Imagecraft helps you write recipes—it does not build or run them. Review every download before using it. Building RHEL images needs your own RHEL access and a suitable build machine. This is an independent prototype, not a Red Hat product.
+Imagecraft is a prototype that helps you write recipes—it does not build or run them. Review every download before using it. Building RHEL images needs your own RHEL access and a suitable build machine.
 
 ## 🏠 Run it yourself
 
-With Docker installed:
+With Podman installed:
 
 ```sh
-docker run --rm -p 8080:8080 ghcr.io/erikgraa/imagecraft:edge
+podman run --rm -p 8080:8080 ghcr.io/erikgraa/imagecraft:edge
 ```
 
-Open **[localhost:8080](http://localhost:8080)**. You can replace `docker` with `podman`.
+Open **[localhost:8080](http://localhost:8080)**. Docker works too—replace `podman` with `docker`.
 
 `edge` is the newest development build. Numbered releases will have their own image tags and a stable `latest` tag; no numbered release has been published yet.
 
