@@ -73,7 +73,7 @@ test('keyboard reordering, boundaries, duplicate and deletion preserve focus', a
 });
 
 test('expanded options, COPY files, builder controls and persistent errors', async ({ page }, testInfo) => {
-  await page.locator('summary').focus();
+  await page.locator('#view-compose summary').focus();
   await page.keyboard.press('Enter');
   for (const id of ['export-folder', 'export-recipe', 'import-recipe', 'base-digest']) {
     await page.keyboard.press('Tab');
@@ -97,7 +97,7 @@ test('expanded options, COPY files, builder controls and persistent errors', asy
   await expect(page.locator('#download')).toBeDisabled();
   await page.getByRole('textbox', { name: 'Absolute destination file for step 5' }).fill('/etc/example.conf');
   await page.getByRole('textbox', { name: 'Build-context source for step 5' }).fill('files/example.conf');
-  await page.locator('summary').click();
+  await page.locator('#view-compose summary').click();
   await page.getByRole('textbox', { name: 'Build-context source for step 5' }).fill('files/../bad.conf');
   await page.getByLabel('Local file for step 5', { exact: true }).setInputFiles({ name: 'bad.conf', mimeType: 'text/plain', buffer: Buffer.from('not accepted') });
   await expect(page.locator('#options-error')).toBeVisible();
@@ -109,7 +109,7 @@ test('expanded options, COPY files, builder controls and persistent errors', asy
   await expect(page.locator('#download')).toBeEnabled();
   await expect(page.getByLabel('Local file for step 5', { exact: true })).toHaveAttribute('aria-describedby', /note-/);
   await expect(page.locator('#options-error')).toBeHidden();
-  await page.locator('summary').click();
+  await page.locator('#view-compose summary').click();
   await page.locator('#local-checks').check();
   await expect(page.locator('#review-notes')).toContainText('Package availability is NOT verified');
   await fitsViewport(page);
@@ -164,7 +164,7 @@ test('invalid image and imports expose errors without losing existing recipe', a
   await audit(page);
   await section(page, 'compose');
   await page.locator('#registry').fill('quay.io/acme/web-server:latest');
-  await page.locator('summary').click();
+  await page.locator('#view-compose summary').click();
   await page.locator('#recipe-file').setInputFiles({ name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from('{"format":"imagecraft-recipe","schemaVersion":999}') });
   await expect(page.locator('#options-error')).toContainText('Import rejected: Unsupported');
   await expect(page.locator('#rows .row')).toHaveCount(4);
@@ -176,7 +176,7 @@ test('actual exports and portable import preserve local bytes and reviewed pins'
   page.on('dialog', dialog => dialog.accept());
   await section(page, 'templates');
   await page.getByRole('button', { name: 'Use template: Local service unit', exact: true }).click();
-  await page.locator('summary').click();
+  await page.locator('#view-compose summary').click();
   await page.locator('#base-digest').fill('sha256:' + 'a'.repeat(64));
   await page.locator('#apply-digest').click();
   await expect(page.locator('#pin-status')).toHaveAttribute('role', 'status');
