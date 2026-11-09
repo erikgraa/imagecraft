@@ -2,7 +2,7 @@
 
 **Build your RHEL image recipe, one step at a time.**
 
-A friendly guide and workbench for choosing packages, arranging changes, and downloading a ready-to-review recipe. No account needed; your recipe stays in your browser.
+A friendly guide and workbench for choosing packages, adding files, and downloading a ready-to-review recipe. No account needed; nothing is uploaded.
 
 **Independent and unaffiliated:** Imagecraft is not affiliated with, endorsed by, or sponsored by Red Hat. It is not a Red Hat product.
 
@@ -10,9 +10,13 @@ A friendly guide and workbench for choosing packages, arranging changes, and dow
 
 **[Open Imagecraft →](https://imagecraft.graa.dev/)**
 
+Start with the Understand field guide, then choose **Start composing**. Already know the basics? Open [Compose](https://imagecraft.graa.dev/?view=compose) or [Pipeline](https://imagecraft.graa.dev/?view=pipeline) directly. The Imagecraft logo returns home without resetting your recipe or preferences.
+
 1. Choose RHEL 9 or 10, or start with a template.
-2. Add packages, commands, and services; drag them into order.
-3. Review and download your Containerfile and build workflow.
+2. Add packages, commands, services, or local files; arrange them in order.
+3. Review and download your Containerfile or a complete build folder. Save a portable recipe to continue in another browser.
+
+Local files stay in memory. After reloading, select them again or import your saved portable recipe.
 
 Imagecraft is a prototype that helps you write recipes—it does not build or run them. Review every download before using it. Building RHEL images needs your own RHEL access and a suitable build machine.
 

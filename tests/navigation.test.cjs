@@ -39,7 +39,12 @@ function app(url = 'https://imagecraft.test/') {
   };
   const context = vm.createContext({
     URL, URLSearchParams, location, theme: 'workbench', view: 'learn',
-    recipe: { version: '9', image: 'quay.io/example/saved:v1', rows: [{ id: 'saved', type: 'packages', value: 'curl' }] },
+    recipe: {
+      version: '9', image: 'quay.io/example/saved:v1', digest: 'sha256:' + 'a'.repeat(64),
+      rows: [{ id: 'saved', type: 'packages', value: 'curl' }],
+      stages: [{ name: 'builder', base: 'quay.io/example/builder:v1' }],
+      files: { 'files/config.txt': 'c2F2ZWQ=' },
+    },
     pipelineProvider: 'gitlab', tab: 'build',
     finishSort(commit) { assert.equal(commit, false); },
     $: id => headings[id],

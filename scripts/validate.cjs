@@ -13,7 +13,11 @@ for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
   new vm.Script(source, { filename: src ? src[1] : 'index.html:inline' });
   scripts++;
 }
-assert.equal(scripts, 3);
+assert.equal(scripts, 4);
+assert.ok(html.includes('src="./recipe-engine.js"'));
+for (const id of ['export-folder', 'export-recipe', 'import-recipe', 'base-digest', 'apply-digest', 'add-stage', 'local-checks']) {
+  assert.ok(html.includes(`id="${id}"`), `Missing recipe feature control ${id}`);
+}
 assert.ok(!html.includes('designs.html'));
 for (const key of ['imagecraft-ordered-recipe-v1', 'imagecraft-color-mode', 'imagecraft-pipeline-provider']) {
   assert.ok(html.includes(key), `Preserve browser preference key ${key}`);
