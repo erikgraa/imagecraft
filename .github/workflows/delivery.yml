@@ -48,12 +48,22 @@ jobs:
           node scripts/release.cjs "$RELEASE_TAG"
 
   container:
-    name: Build and smoke-test container
+    name: Build and smoke-test Linux ${{ matrix.arch }}
     needs: check
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
       packages: write
+    env:
+      IMAGE_ARCH: ${{ matrix.arch }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -61,53 +71,84 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24'
-      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
-      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1 (Node24)
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0 (Node24)
         with:
           context: .
+          platforms: linux/${{ matrix.arch }}
           load: true
           push: false
+          # Push the loaded, smoke-tested image without rebuilding. Omit BuildKit
+          # attestations, which the default Docker image store cannot preserve.
+          provenance: false
           tags: imagecraft:check
           labels: |
             org.opencontainers.image.title=Imagecraft
             org.opencontainers.image.description=RHEL image mode guide and recipe workbench
             org.opencontainers.image.source=https://github.com/erikgraa/imagecraft
             org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ needs.check.outputs.version || 'edge' }}
       - name: Smoke-test non-root read-only container
         run: |
-          docker run -d --name imagecraft-check --read-only --cap-drop=ALL --security-opt=no-new-privileges -p 127.0.0.1:8080:8080 imagecraft:check
           trap 'docker logs imagecraft-check; docker rm -f imagecraft-check' EXIT
+          docker run -d --name imagecraft-check --platform "linux/$IMAGE_ARCH" --read-only --cap-drop=ALL --security-opt=no-new-privileges -p 127.0.0.1:8080:8080 imagecraft:check
           curl --fail --silent --show-error --retry 15 --retry-all-errors --retry-delay 1 http://127.0.0.1:8080/ > /dev/null
           node scripts/smoke.cjs http://127.0.0.1:8080/
-          docker exec imagecraft-check node -e "if (process.getuid() === 0) process.exit(1)"
+          docker exec -e IMAGE_ARCH="$IMAGE_ARCH" imagecraft-check node -e "if (process.getuid() === 0 || process.arch !== ({amd64:'x64',arm64:'arm64'})[process.env.IMAGE_ARCH]) process.exit(1)"
       - name: Log in to GHCR
-        if: github.event_name == 'push'
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0 (Node24)
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish checked image
-        if: github.event_name == 'push'
+      - name: Push the exact smoke-tested platform image
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+        run: node scripts/container-delivery.cjs record
+      - name: Save checked platform digest
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2 (Node24)
+        with:
+          name: checked-digest-${{ matrix.arch }}
+          path: checked-digests/${{ matrix.arch }}.json
+          if-no-files-found: error
+          # Successful matrix legs remain available on rerun-failed-jobs; a
+          # rerun of this leg replaces only its own checked digest.
+          overwrite: true
+          retention-days: 7
+
+  container-publish:
+    name: Assemble and verify multi-platform GHCR image
+    needs: [check, container]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1 (Node24)
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2 (Node24)
+        with:
+          pattern: checked-digest-*
+          path: checked-digests
+          merge-multiple: true
+      - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0 (Node24)
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish only the verified two-platform manifest
         env:
           VERSION: ${{ needs.check.outputs.version }}
           PRERELEASE: ${{ needs.check.outputs.prerelease }}
-          REF: ${{ github.ref }}
-        run: |
-          tags=()
-          if [[ "$REF" == refs/heads/main ]]; then
-            tags+=(edge)
-          else
-            tags+=("$VERSION")
-            if [[ "$PRERELEASE" == false ]]; then
-              tags+=(latest)
-            fi
-          fi
-          for tag in "${tags[@]}"; do
-            image="ghcr.io/erikgraa/imagecraft:$tag"
-            docker tag imagecraft:check "$image"
-            docker push "$image"
-          done
+        run: node scripts/container-delivery.cjs publish
 
   pages-artifact:
     name: Prepare public website
@@ -146,7 +187,7 @@ jobs:
 
   release:
     name: Publish release notes
-    needs: [check, container]
+    needs: [check, container-publish]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:
