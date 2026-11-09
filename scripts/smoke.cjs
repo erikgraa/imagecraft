@@ -8,6 +8,7 @@ async function smoke(base) {
   assert.match(html, /<title>Imagecraft/);
   assert.ok(html.includes('Not affiliated with, endorsed by, or sponsored by Red Hat.'));
   assert.ok(!html.includes('designs.html'));
+  assert.ok(!html.includes('INTERACTIVE CONCEPT'));
   for (const filename of ['recipe-order.js', 'pipeline-generator.js']) {
     const asset = await fetch(new URL(filename, base));
     assert.equal(asset.status, 200, filename);

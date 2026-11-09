@@ -19,6 +19,8 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 - The selected prototype is now the default application; discarded design routes are not shipped.
 - Podman is the primary self-hosting example, with Docker as an alternative.
 - The README and app explicitly state that Imagecraft is unaffiliated with Red Hat.
+- Removed the "INTERACTIVE CONCEPT" header badge.
+- Added guidance and roadmap priorities for file copying, complete build-folder exports, and Containerfile instructions beyond RUN.
 
 ### Known limitations
 - Recipes and generated workflows are illustrative and have not been validated by real RHEL builds.
