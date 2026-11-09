@@ -10,6 +10,8 @@ A friendly guide and workbench for choosing packages, adding files, and download
 
 **[Open Imagecraft →](https://imagecraft.graa.dev/)**
 
+Start with the Understand field guide, then choose **Start composing**. Already know the basics? Open [Compose](https://imagecraft.graa.dev/?view=compose) or [Pipeline](https://imagecraft.graa.dev/?view=pipeline) directly. The Imagecraft logo returns home without resetting your recipe or preferences.
+
 1. Choose RHEL 9 or 10, or start with a template.
 2. Add packages, commands, services, or local files; arrange them in order.
 3. Review and download your Containerfile or a complete build folder. Save a portable recipe to continue in another browser.
