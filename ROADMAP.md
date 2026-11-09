@@ -19,12 +19,14 @@ Imagecraft is an independent prototype. These ideas are directions to explore, n
 - [x] Named builder stages and artifact `COPY` from earlier builders into later stages or the final OS.
 - [x] Six illustrative starter recipes with compatibility notes.
 - [x] Optional local review hints for recipe mistakes; these do not check package availability or execute builds.
+- [x] Expanded guidance on credentials, file permissions, persistent state, SELinux, builder compatibility, protected runners, and safe updates/rollback.
+- [x] Repeatable Chromium/axe accessibility and interaction checks across desktop/mobile and light/dark themes, with improved keyboard focus and associated validation errors.
 
 ## Next to explore
+
 - [ ] Validate starter recipes with real RHEL builds and boot tests.
 - [ ] Test generated workflows on each supported provider with entitled runners.
-- [ ] Expand guidance around secrets, persistent state, and safe updates.
-- [ ] Broaden automated accessibility checks, then test with screen readers and user feedback.
+- [ ] Manual screen-reader testing and real user feedback; automated checks are not a substitute.
 - [ ] Publish the first numbered release after real-world validation.
 
 ## Later possibilities
