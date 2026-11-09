@@ -5,6 +5,11 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 ## [Unreleased]
 
 ### Added
+
+- Signing and verification guidance for published OCI images and generated disk files, distinguishing bootc trust policy, detached signatures, checksums and Secure Boot.
+- Guided bootc status, upgrade, target switch and rollback walkthrough with separate staging/reboot expectations and persistent-data warnings.
+- Installation artifact command/config wizard for QCOW2, raw disks and a documented vSphere VMDK import path; generated output is not a tested build or deployment.
+- Initial-HTML Open Graph and large-image card metadata with a real 1200×630 homepage preview served by Pages and the static container.
 - Public Imagecraft workbench, with RHEL 9/10 selection and six illustrative starter recipes with compatibility notes.
 - Ordered local-file COPY, LABEL, ARG, ENV, WORKDIR, named builder stages, and earlier-stage artifact copies.
 - Complete build-folder TAR downloads including exact referenced files, ignore rules, and the selected provider workflow.

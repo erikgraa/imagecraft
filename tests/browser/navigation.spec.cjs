@@ -102,7 +102,7 @@ test('home and every view preserve local file bytes, stage settings and base pin
   page.on('dialog', dialog => dialog.accept());
   await navigate(page, 'templates');
   await page.getByRole('button', { name: 'Use template: Local service unit', exact: true }).click();
-  await page.locator('summary').click();
+  await page.locator('#view-compose summary').click();
   await page.locator('#base-digest').fill('sha256:' + 'a'.repeat(64));
   await page.locator('#apply-digest').click();
   await page.locator('#stage-name').fill('builder');

@@ -9,6 +9,8 @@ const files = {
   '/recipe-order.js': ['recipe-order.js', 'text/javascript; charset=utf-8'],
   '/pipeline-generator.js': ['pipeline-generator.js', 'text/javascript; charset=utf-8'],
   '/recipe-engine.js': ['recipe-engine.js', 'text/javascript; charset=utf-8'],
+  '/installation-generator.js': ['installation-generator.js', 'text/javascript; charset=utf-8'],
+  '/social-preview.png': ['social-preview.png', 'image/png'],
 };
 
 function createServer() {
