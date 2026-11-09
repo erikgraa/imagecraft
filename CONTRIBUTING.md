@@ -12,6 +12,8 @@ npm start
 
 Open http://localhost:8080. Set `PORT` to change the listening port. The server binds to all interfaces; use a firewall or reverse proxy when exposing it publicly.
 
+The root URL opens **Understand**. Direct links use `?view=compose`, `?view=pipeline`, `?view=build`, or `?view=templates`; `?view=learn` also opens Understand. Unknown views fall back to Understand. The Imagecraft brand is a keyboard-accessible home link. In-app navigation updates browser history without replacing the current recipe or color/pipeline preferences. Verify reloads, Back/Forward, and edited recipes when changing navigation.
+
 There are no runtime package dependencies. The development-only YAML parser validates downloaded pipelines and repository workflows. Tests cover ordering, pipeline generation, static serving, and release-note extraction. CI also lints Actions and builds and smoke-tests the container.
 
 ## Files
