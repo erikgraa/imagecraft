@@ -9,6 +9,7 @@ Imagecraft is an independent prototype. These ideas are directions to explore, n
 - [x] Containerfile, build-command, and GitHub/GitLab/Azure workflow downloads.
 - [x] Browser-local preferences, light/dark themes, and responsive layouts.
 - [x] Public website and self-hosted container infrastructure.
+- [x] Linux amd64 and arm64 Imagecraft images, with native HTTP checks and verified multi-platform publication.
 - [x] Automated checks and changelog-based release tooling.
 
 ## Next to explore
@@ -29,6 +30,5 @@ Imagecraft is an independent prototype. These ideas are directions to explore, n
 - [ ] Explore multi-stage builds for copying compiled artifacts into the final OS image.
 - [ ] More starter recipes, with explicit compatibility notes.
 - [ ] Optional checks for package availability and recipe mistakes.
-- [ ] Multi-platform Imagecraft container images (initial publication is Linux amd64).
 
 Imagecraft does not execute recipes or hold build credentials. Any future integration needs a separate design and review. Preserve bootc startup and user defaults: application-container features such as `CMD`, `ENTRYPOINT`, `USER`, and `EXPOSE` are not a priority for this OS-image editor. Prefer `COPY` over the implicit download/extraction behavior of `ADD` for the initial file workflow.

@@ -33,7 +33,9 @@ docker build -t imagecraft .
 docker run --rm --read-only --cap-drop=ALL --security-opt=no-new-privileges -p 8080:8080 imagecraft
 ```
 
-Podman accepts the same commands. No persistent volume or RHEL entitlement is required to host Imagecraft. Its container includes only the server and public assets. The initial published image targets Linux amd64. Use a reverse proxy for HTTPS outside localhost.
+Podman accepts the same commands. No persistent volume or RHEL entitlement is required to host Imagecraft. Its container includes only the server and public assets. Published images support Linux amd64 and arm64; your container tool selects the matching architecture. Both platforms run native non-root, read-only HTTP smoke checks before publication. Use a reverse proxy for HTTPS outside localhost.
+
+CI publishes the exact checked platform images by digest, verifies a combined image index, then promotes that index to the appropriate public tags. Internal `checked-<run>-<attempt>-<arch|index>` staging tags remain in GHCR; use `edge` or a numbered release instead. Digest receipts are retained for seven days. Failed-job reruns can reuse a successful architecture from the same run and commit; after receipt expiry, rerun both architecture jobs.
 
 ## Deployment
 

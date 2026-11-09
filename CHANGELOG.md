@@ -12,6 +12,7 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 - Light and dark themes and responsive layouts.
 - GitHub Pages hosting at imagecraft.graa.dev.
 - Non-root self-hosted container and tested GHCR publication infrastructure.
+- Native Linux amd64 and arm64 container build/HTTP checks and verified two-platform GHCR image publication.
 - Automated tests, container HTTP checks, and changelog-driven tagged release infrastructure.
 - Weekly Dependabot updates for validation dependencies, the container base image, and GitHub Actions.
 
