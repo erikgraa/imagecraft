@@ -15,7 +15,7 @@ async function fixture(t) {
   return `http://127.0.0.1:${server.address().port}/`;
 }
 
-test('serves the chosen app and both helpers without exposing repository files', async t => {
+test('serves the chosen app and all helpers without exposing repository files', async t => {
   await smoke(await fixture(t));
 });
 
