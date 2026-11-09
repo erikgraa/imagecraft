@@ -35,6 +35,10 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run check
+      - name: Install browser for accessibility checks
+        run: npx playwright install --with-deps chromium
+      - name: Browser and automated accessibility checks
+        run: npm run test:browser
       - name: Lint GitHub Actions
         run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -color
       - name: Validate tagged release
