@@ -1,4 +1,4 @@
-# 🖼️ Imagecraft
+# <img src="assets/imagecraft.svg" width="29" height="36" alt=""> Imagecraft
 
 **Build your RHEL image recipe, one step at a time.**
 
