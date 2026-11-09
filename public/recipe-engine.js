@@ -1,7 +1,7 @@
 /* Browser-local recipe data and text generation; never executes instructions. */
 (function(root) {
 'use strict';
-const TYPES = ['packages', 'command', 'service', 'copy', 'label', 'arg', 'env', 'workdir', 'artifact'];
+const TYPES = ['packages', 'command', 'service', 'copy', 'add', 'label', 'arg', 'env', 'workdir', 'artifact'];
 const MAX_FILE = 5 * 1024 * 1024, MAX_TOTAL = 20 * 1024 * 1024;
 const imagePattern = /^[a-z0-9][a-z0-9.-]*(?::[0-9]+)?\/[a-z0-9]+(?:[._-][a-z0-9]+)*(?:\/[a-z0-9]+(?:[._-][a-z0-9]+)*)*(?::[A-Za-z0-9_][A-Za-z0-9_.-]*)?(?:@sha256:[a-f0-9]{64})?$/;
 const digestPattern = /^sha256:[a-f0-9]{64}$/;
@@ -12,6 +12,19 @@ function safePath(value) {
  return typeof value === 'string' && value.length <= 200 && /^[A-Za-z0-9_-][A-Za-z0-9._/-]*$/.test(value) && value.split('/').every(part => part && part !== '.' && part !== '..' && !part.endsWith('.') && !/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(part));
 }
 function destination(value) { return typeof value === 'string' && value.startsWith('/') && (value === '/' || safePath(value.slice(1))); }
+function addDestination(value) {
+ if (typeof value !== 'string') return false;
+ const path = value.endsWith('/') ? value.slice(0, -1) : value;
+ return path !== '/' && destination(path);
+}
+function httpsSource(value) {
+ if (!line(value, 500) || !/^https:\/\/[^/?#@]+(?:[/?]|$)/i.test(value) || /[\s\\"'`$<>#]/.test(value) || /%(?![a-f0-9]{2})/i.test(value)) return false;
+ try {
+  const url = new URL(value), decoded = decodeURIComponent(value);
+  return url.protocol === 'https:' && !!url.hostname && !url.username && !url.password && !url.hash && !/[\x00-\x1f\x7f\\"'`$<>#]/.test(decoded) && !/\.git\/?$/i.test(decodeURIComponent(url.pathname)) && !/\.git$/i.test(value);
+ } catch { return false; }
+}
+function localSource(row) { return row.type === 'copy' || (row.type === 'add' && row.sourceKind === 'local'); }
 function credentialPath(path) { return /(?:^|\/)(?:\.env(?:\..*)?|\.netrc|\.git-credentials|auth\.json|credentials(?:\..*)?|id_rsa|id_ed25519|.*\.(?:key|pem|p12|pfx))$/i.test(path) || /(?:^|\/)\.docker\/config\.json$/i.test(path); }
 function secretLike(value) {
  value = String(value).replace(/\\(["'])/g, '$1');
@@ -48,7 +61,7 @@ function normalize(input) {
   if (!row || !line(row.id, 100) || !/^[A-Za-z0-9_-]+$/.test(row.id) || ids.has(row.id) || !TYPES.includes(row.type) || !line(row.value)) fail('Invalid step schema: single-line values and unique IDs are required.');
   ids.add(row.id);
   const clean = { id: row.id, type: row.type, value: row.value };
-  for (const field of ['stage', 'source', 'destination', 'mode', 'from']) if (row[field] !== undefined) { if (!line(row[field], 500)) fail('Invalid step field.'); clean[field] = row[field]; }
+  for (const field of ['stage', 'source', 'sourceKind', 'destination', 'mode', 'from']) if (row[field] !== undefined) { if (!line(row[field], 500)) fail('Invalid step field.'); clean[field] = row[field]; }
   if (clean.stage && !result.stages.some(s => s.name === clean.stage)) fail('Step refers to an unknown builder stage.');
   result.rows.push(clean);
  }
@@ -63,12 +76,19 @@ function rowError(row, recipe) {
  if (!TYPES.includes(row.type) || !line(row.value)) return 'Use a supported step with a single-line value.';
  if (secretLike(Object.values(row).join(' '))) return 'Possible credential material detected. Remove it; recipe text is not secret storage.';
  const value = row.value.trim();
- if (['copy', 'artifact'].includes(row.type)) {
-  if (!destination(row.destination) || row.destination === '/') return 'Use an explicit absolute destination file path without traversal.';
+ if (['copy', 'add', 'artifact'].includes(row.type)) {
+  if (row.type === 'add') {
+   if (!['local', 'https'].includes(row.sourceKind)) return 'Choose a local file/archive or HTTPS URL source for ADD.';
+   if (row.from) return 'ADD does not copy from builder stages; use Artifact COPY instead.';
+   if (!addDestination(row.destination)) return 'Use an explicit absolute destination without traversal; end directory paths with /.';
+  } else if (!destination(row.destination) || row.destination === '/') return 'Use an explicit absolute destination file path without traversal.';
   if (!/^[0-7]{3,4}$/.test(row.mode || '')) return 'Specify octal permissions, such as 0644 or 0755.';
-  if (row.type === 'copy') {
+  if (localSource(row)) {
    if (!safePath(row.source) || !row.source.startsWith('files/') || credentialPath(row.source)) return 'Select a local file and use a safe files/ source path.';
    if (!Object.hasOwn(recipe.files || {}, row.source)) return 'Select the referenced local file again (file bytes are never saved to browser storage).';
+  } else if (row.type === 'add') {
+   if (!httpsSource(row.source)) return 'Use a valid HTTPS file URL without credentials, fragments, Git repositories, whitespace or instruction metacharacters. Percent-encode URL spaces.';
+   if (row.destination.endsWith('/') && decodeURIComponent(new URL(row.source).pathname).endsWith('/')) return 'Use an explicit destination filename when the HTTPS URL has no filename.';
   } else {
    const sourceStage = recipe.stages.findIndex(s => s.name === row.from);
    const targetStage = row.stage ? recipe.stages.findIndex(s => s.name === row.stage) : recipe.stages.length;
@@ -105,7 +125,7 @@ function instruction(row) {
  if (row.type === 'packages') return `RUN dnf install -y ${value.split(/\s+/).join(' ')} \\\n    && dnf clean all`;
  if (row.type === 'command') return 'RUN ' + value;
  if (row.type === 'service') return 'RUN systemctl enable ' + value;
- if (['copy', 'artifact'].includes(row.type)) return `COPY ${row.type === 'artifact' ? '--from=' + row.from + ' ' : ''}--chmod=${row.mode} ${JSON.stringify([row.source, row.destination])}`;
+ if (['copy', 'add', 'artifact'].includes(row.type)) return `${row.type === 'add' ? 'ADD' : 'COPY'} ${row.type === 'artifact' ? '--from=' + row.from + ' ' : ''}--chmod=${row.mode} ${JSON.stringify([row.source, row.destination])}`;
  if (row.type === 'workdir') return 'WORKDIR ' + value;
  if (row.type === 'arg') { const index = value.indexOf('='); return 'ARG ' + (index < 0 ? value : value.slice(0, index) + '=' + JSON.stringify(value.slice(index + 1))); }
  const index = value.indexOf('='); return row.type.toUpperCase() + ' ' + value.slice(0, index) + '=' + JSON.stringify(value.slice(index + 1));
@@ -126,7 +146,8 @@ function review(recipe) {
  if (recipe.rows.some(r => ['arg', 'env', 'label'].includes(r.type))) notes.push('ARG is scoped to its build stage; redeclare in each stage. ENV persists in that image stage and affects later RUN. LABEL is public metadata. None is secret storage.');
  for (const row of recipe.rows) {
   if (row.type === 'command' && /\b(?:dnf\s+update|curl.*\|.*sh|chmod\s+777|systemctl\s+start|rm\s+-rf)\b/.test(row.value)) notes.push(`Review step ${recipe.rows.indexOf(row) + 1}: risky or build-time-only command pattern.`);
-  if (['copy', 'artifact'].includes(row.type) && /^\/var\//.test(row.destination)) notes.push('Review /var initialization and persistent state semantics; image updates do not replace runtime application data.');
+  if (row.type === 'add') notes.push('Prefer COPY for straightforward local copying. ADD may unpack local tar archives (detected by content) or download HTTPS content AT BUILD TIME; remote archives are not automatically unpacked. Imagecraft never fetches URLs or unpacks selected archives. Review archive contents, provenance, redirects, availability, permissions, ownership and SELinux labels on your build host; directory traversal needs execute permissions. HTTPS alone does not pin content or guarantee reproducibility.');
+  if (['copy', 'add', 'artifact'].includes(row.type) && /^\/var\//.test(row.destination)) notes.push('Review /var initialization and persistent state semantics; image updates do not replace runtime application data.');
  }
  if (recipe.stages.length) notes.push('Builder bases and output ABI/architecture must match the selected RHEL OS. Builder files are not included unless explicitly copied. Builders do not inherit final OS ARG/ENV/WORKDIR.');
  return [...new Set(notes)];
@@ -137,7 +158,7 @@ function checked(recipe) {
  if (secretLike(clean.image) || secretLike(clean.name)) fail('Possible credential material detected.');
  return clean;
 }
-function portableExport(recipe) { const clean = checked(recipe), referenced = new Set(clean.rows.filter(row => row.type === 'copy').map(row => row.source)); clean.files = Object.fromEntries(Object.entries(clean.files).filter(([path]) => referenced.has(path))); return JSON.stringify({ format: 'imagecraft-recipe', schemaVersion: 2, recipe: clean }, null, 2) + '\n'; }
+function portableExport(recipe) { const clean = checked(recipe), referenced = new Set(clean.rows.filter(localSource).map(row => row.source)); clean.files = Object.fromEntries(Object.entries(clean.files).filter(([path]) => referenced.has(path))); return JSON.stringify({ format: 'imagecraft-recipe', schemaVersion: 2, recipe: clean }, null, 2) + '\n'; }
 function portableImport(value) {
  if (typeof value !== 'string' || value.length > 30 * 1024 * 1024) fail('Recipe import exceeds 30 MiB.');
  const document = JSON.parse(value);
@@ -154,7 +175,7 @@ function buildEntries(recipe, pipeline) {
  const clean = checked(recipe);
  if (!pipeline || !['.github/workflows/build-image.yml', '.gitlab-ci.yml', 'azure-pipelines.yml'].includes(pipeline.filename) || !text(pipeline.content, 100000)) fail('Invalid generated pipeline.');
  const entries = [{ path: 'Containerfile', bytes: new TextEncoder().encode(containerfile(clean)) }];
- const referenced = new Set(clean.rows.filter(r => r.type === 'copy').map(r => r.source));
+ const referenced = new Set(clean.rows.filter(localSource).map(r => r.source));
  for (const path of referenced) entries.push({ path, bytes: fileCheck(path, clean.files[path]) });
  // Allowlist context files rather than exporting browser uploads or repository credentials indiscriminately.
  const directories = new Set();
@@ -186,7 +207,7 @@ function tar(entries) {
  const result = new Uint8Array(blocks.reduce((sum, block) => sum + block.length, 0)); let offset = 0; for (const block of blocks) { result.set(block, offset); offset += block.length; }
  return result;
 }
-const api = { TYPES, MAX_FILE, MAX_TOTAL, safePath, destination, secretLike, bytesToBase64, base64ToBytes, fileCheck, normalize, rowError, errors, baseReference, containerfile, review, portableExport, portableImport, persisted, buildEntries, tar };
+const api = { TYPES, MAX_FILE, MAX_TOTAL, safePath, destination, addDestination, httpsSource, localSource, secretLike, bytesToBase64, base64ToBytes, fileCheck, normalize, rowError, errors, baseReference, containerfile, review, portableExport, portableImport, persisted, buildEntries, tar };
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
 else root.RecipeEngine = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
