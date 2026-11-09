@@ -1,6 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const { createHash } = require('node:crypto');
 const assert = require('node:assert/strict');
 const YAML = require('yaml');
 const { generatePipeline } = require('../public/pipeline-generator.js');
@@ -9,13 +10,18 @@ const html = fs.readFileSync(path.join(root, 'public', 'index.html'), 'utf8');
 let scripts = 0;
 for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
   const src = /src="([^"]+)"/.exec(match[1]);
-  const source = src ? fs.readFileSync(path.join(root, 'public', src[1]), 'utf8') : match[2];
-  new vm.Script(source, { filename: src ? src[1] : 'index.html:inline' });
+  const filename = src ? src[1].split('?')[0] : 'index.html:inline';
+  const source = src ? fs.readFileSync(path.join(root, 'public', filename), 'utf8') : match[2];
+  if (filename === './recipe-engine.js') {
+    const fingerprint = createHash('sha256').update(source.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
+    assert.equal(src[1], `./recipe-engine.js?v=${fingerprint}`, 'Update the recipe-engine cache fingerprint in index.html when changing its API or implementation');
+  }
+  new vm.Script(source, { filename });
   scripts++;
 }
 assert.equal(scripts, 5);
 assert.ok(html.includes('src="./installation-generator.js"'));
-assert.ok(html.includes('src="./recipe-engine.js"'));
+assert.match(html, /src="\.\/recipe-engine\.js\?v=[a-f0-9]{12}"/);
 for (const id of ['export-folder', 'export-recipe', 'import-recipe', 'base-digest', 'apply-digest', 'add-stage', 'local-checks']) {
   assert.ok(html.includes(`id="${id}"`), `Missing recipe feature control ${id}`);
 }

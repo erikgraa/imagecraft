@@ -27,6 +27,12 @@ test('handles HEAD, query strings, missing routes and disallowed methods', async
   assert.equal(await head.text(), '');
   assert.equal(head.headers.get('content-length'), get.headers.get('content-length'));
   assert.equal(head.headers.get('x-content-type-options'), 'nosniff');
+  const engineSource = /src="\.\/(recipe-engine\.js\?v=[a-f0-9]{12})"/.exec(await get.text());
+  assert.ok(engineSource, 'The app must use a versioned recipe engine');
+  const versioned = await fetch(base + engineSource[1]);
+  assert.equal(versioned.status, 200);
+  assert.match(versioned.headers.get('content-type'), /javascript/);
+  assert.equal(await versioned.text(), await (await fetch(base + 'recipe-engine.js')).text());
   const post = await fetch(base, { method: 'POST' });
   assert.equal(post.status, 405);
   assert.equal(post.headers.get('allow'), 'GET, HEAD');

@@ -42,6 +42,8 @@ Prefer **COPY** for straightforward local copying. **ADD** may unpack local tar 
 
 Local files stay in memory. After reloading, select them again or import your saved portable recipe. Complete build-folder and portable JSON exports include referenced local COPY/ADD bytes; a standalone Containerfile does not.
 
+**Clear**, next to **Reset**, empties all recipe steps, builder stages and attached files after confirmation. It keeps your RHEL version, reviewed base pin, destination image and preferences. The empty recipe is saved locally and exports the selected bootc base plus its final compatibility check. **Reset** still restores the starter example.
+
 Imagecraft is a prototype that helps you write recipes—it does not build or run them. Review every download before using it. Building RHEL images needs your own RHEL access and a suitable build machine.
 
 ## 🏠 Run it yourself

@@ -4,6 +4,10 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 
 ## [Unreleased]
 
+### Fixed
+
+- Fingerprinted recipe-engine loading prevents a cached pre-ADD helper from breaking recipe rendering and template loading after a deployment; existing recipes and browser preferences are not cleared.
+
 ### Added
 
 - Signing and verification guidance for published OCI images and generated disk files, distinguishing bootc trust policy, detached signatures, checksums and Secure Boot.
