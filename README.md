@@ -6,6 +6,25 @@ A friendly guide and workbench for choosing packages, adding files, and download
 
 **Independent and unaffiliated:** Imagecraft is not affiliated with, endorsed by, or sponsored by Red Hat. It is not a Red Hat product.
 
+![Imagecraft Compose editor with an illustrative web-server recipe and its generated Containerfile side by side.](assets/screenshots/compose.png)
+
+<details>
+<summary>More previews</summary>
+
+**Dark mode**
+
+![The same Compose recipe and Containerfile in dark mode.](assets/screenshots/compose-dark.png)
+
+**Starter Library**
+
+![Starter Library with ready-to-customize image recipe templates.](assets/screenshots/starter-library.png)
+
+**Pipeline**
+
+![Pipeline view with a generated GitHub Actions workflow for an illustrative image.](assets/screenshots/pipeline.png)
+
+</details>
+
 ## ✨ Use it online
 
 **[Open Imagecraft →](https://imagecraft.graa.dev/)**
