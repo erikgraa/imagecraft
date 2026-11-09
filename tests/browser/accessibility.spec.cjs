@@ -21,7 +21,8 @@ async function fitsViewport(page) {
 
 test.beforeEach(async ({ page }, testInfo) => {
   await page.addInitScript(mode => localStorage.setItem('imagecraft-color-mode', mode), testInfo.project.name.endsWith('dark') ? 'dark' : 'light');
-  await page.goto('/');
+  await page.goto('/?view=compose');
+  await expect(page.locator('#view-compose')).toBeVisible();
   await expect(page.locator('#rows .row')).toHaveCount(4);
 });
 
