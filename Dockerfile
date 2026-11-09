@@ -1,4 +1,4 @@
-FROM node:24-alpine
+FROM node:26-alpine
 ENV NODE_ENV=production PORT=8080
 WORKDIR /app
 COPY --chown=node:node server.cjs ./server.cjs
