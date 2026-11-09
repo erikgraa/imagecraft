@@ -57,6 +57,78 @@ test('COPY uses explicit permissions and exact JSON source/destination; reload r
  assert.match(E.errors(stored).join(' '), /Select the referenced local file again/);
 });
 
+test('local ADD preserves opaque archive bytes across JSON/tar exports and requires reselection after reload', () => {
+ const archive = E.tar([{ path: 'archive/content.txt', bytes: new Uint8Array([0, 255, 7]) }]);
+ const value = recipe([row('add', '', { sourceKind: 'local', source: 'files/content.tar', destination: '/usr/share/example/', mode: '0755' })], { files: { 'files/content.tar': E.bytesToBase64(archive), 'files/unused': data('unused') } });
+ assert.deepEqual(E.errors(value), []);
+ assert.match(E.containerfile(value), /ADD --chmod=0755 \["files\/content.tar","\/usr\/share\/example\/"\]/);
+ const restored = E.portableImport(E.portableExport(value));
+ assert.deepEqual(Object.keys(restored.files), ['files/content.tar']);
+ assert.deepEqual(E.base64ToBytes(restored.files['files/content.tar']), archive);
+ assert.deepEqual(restored.rows, value.rows);
+ for (const provider of ['github', 'gitlab', 'azure']) {
+  const entries = E.buildEntries(value, generatePipeline(provider, value.image));
+  assert.deepEqual(untar(E.tar(entries)), entries);
+  assert.deepEqual(entries.find(e => e.path === 'files/content.tar').bytes, archive);
+  assert.ok(!entries.some(e => e.path.startsWith('archive/') || e.path === 'files/unused'));
+  assert.match(new TextDecoder().decode(entries.find(e => e.path === '.containerignore').bytes), /!files\/content.tar/);
+ }
+ const stored = E.persisted(value);
+ assert.deepEqual(stored.files, {});
+ assert.equal(stored.rows[0].sourceKind, 'local');
+ assert.match(E.errors(stored).join(' '), /Select the referenced local file again/);
+ assert.ok(E.review(value).some(note => note.includes('AT BUILD TIME') && note.includes('not automatically unpacked')));
+});
+
+test('HTTPS ADD emits exact JSON URL, survives persistence and needs no context bytes or fetch', () => {
+ const source = 'https://example.com:8443/release%20bundle.tar.gz?flavor=a&mirror=b;v=1';
+ const value = recipe([row('add', '', { sourceKind: 'https', source, destination: '/usr/share/release.tar.gz', mode: '0644' })]);
+ assert.deepEqual(E.errors(value), []);
+ assert.ok(E.containerfile(value).includes('ADD --chmod=0644 ' + JSON.stringify([source, '/usr/share/release.tar.gz'])));
+ assert.deepEqual(E.portableImport(E.portableExport(value)), value);
+ assert.deepEqual(E.persisted(value), value);
+ const entries = E.buildEntries(value, generatePipeline('github', value.image));
+ assert.ok(!entries.some(e => e.path.startsWith('files/')));
+ assert.equal(new TextDecoder().decode(entries[1].bytes), '**\n!Containerfile\n');
+ assert.ok(!E.containerfile(value).includes('--unpack'));
+ assert.ok(E.httpsSource('https://[2001:db8::1]/file'));
+ assert.ok(E.httpsSource('HTTPS://example.com/file'));
+ for (const source of ['https://example.com/', 'https://example.com/path%2f']) assert.ok(E.rowError({ ...value.rows[0], source, destination: '/usr/share/example/' }, value));
+ assert.equal(E.rowError({ ...value.rows[0], source: 'https://example.com/', destination: '/usr/share/index.html' }, value), '');
+});
+
+test('ADD rejects unsupported or injectable sources, paths, permissions and imported fields', () => {
+ const valid = row('add', '', { sourceKind: 'https', source: 'https://example.com/file', destination: '/etc/example', mode: '0644' });
+ const value = recipe([valid]);
+ for (const source of ['http://example.com/file', 'git://example.com/repo', 'git@github.com:acme/repo.git', 'https://example.com/repo.git', 'https://example.com/file?ref=repo.git', 'https://example.com/repo%2egit/', 'https://example.com/file#main', 'https://example.com/file#', 'https://user:pass@example.com/file', 'https://@example.com/file', 'https:///example.com/file', 'https://', 'https://example.com:bad/file', 'https://example.com/a b', 'https://example.com/file\nRUN evil', 'https://example.com/file%0aRUN', 'https://example.com/%00file', 'https://example.com/\\file', 'https://example.com/"file', 'https://example.com/$NAME', 'https://example.com/%24NAME', 'https://example.com/`cmd`', 'https://example.com/%zz', '--chmod=0777']) {
+  assert.equal(E.httpsSource(source), false, source);
+  assert.ok(E.rowError({ ...valid, source }, value), source);
+  assert.throws(() => E.portableImport(JSON.stringify({ format: 'imagecraft-recipe', schemaVersion: 2, recipe: { ...value, rows: [{ ...valid, source }] } })), undefined, source);
+  assert.ok(!E.containerfile({ ...value, rows: [{ ...valid, source }] }).includes('\nADD '), source);
+ }
+ for (const fields of [{ sourceKind: '' }, { sourceKind: 'git' }, { from: 'build' }, { mode: '0644 --link' }, { mode: '888' }, { destination: '/' }, { destination: '//' }, { destination: '/etc/../x/' }, { destination: '/etc/a b/' }, { destination: '/etc//x/' }, { sourceKind: 'local', source: '../file' }, { sourceKind: 'local', source: 'files/missing' }]) assert.ok(E.rowError({ ...valid, ...fields }, value), JSON.stringify(fields));
+ assert.throws(() => recipe([{ ...valid, sourceKind: 'https\nRUN evil' }]));
+});
+
+test('ADD and COPY share referenced context bytes without changing stage/pin/lint behavior', () => {
+ const value = fileRecipe();
+ value.digest = 'sha256:' + 'a'.repeat(64);
+ value.stages = [{ name: 'build', base: 'quay.io/acme/build:v1' }];
+ value.rows.unshift(row('add', '', { id: 'add1', stage: 'build', sourceKind: 'local', source: 'files/config.conf', destination: '/out/', mode: '0755' }));
+ value.rows.push(row('add', '', { id: 'add2', sourceKind: 'https', source: 'https://example.com/config', destination: '/var/lib/example/config', mode: '0644' }));
+ assert.deepEqual(E.errors(value), []);
+ const generated = E.containerfile(value);
+ assert.ok(generated.indexOf('ADD --chmod=0755') < generated.indexOf(' AS os'));
+ assert.match(generated, /COPY --chmod=0644 \["files\/config.conf","\/etc\/example.conf"\]/);
+ assert.match(generated, /FROM registry.redhat.io\/rhel10\/rhel-bootc@sha256:a{64} AS os/);
+ assert.equal((generated.match(/RUN bootc container lint/g) || []).length, 1);
+ assert.ok(generated.endsWith('RUN bootc container lint\n'));
+ assert.equal(E.buildEntries(value, generatePipeline('github', value.image)).filter(e => e.path === 'files/config.conf').length, 1);
+ assert.ok(E.review(value).some(note => note.includes('/var initialization')));
+ value.rows.reverse();
+ assert.throws(() => E.portableExport(value), /Order builder steps/);
+});
+
 test('portable recipe moves file bytes, settings, stages and row identities without executing anything', () => {
  const value = fileRecipe();
  value.digest = 'sha256:' + 'a'.repeat(64);
@@ -78,7 +150,7 @@ test('rejects unsafe paths, platform-dependent paths, destinations, credentials 
 });
 
 test('rejects unsupported instructions, malformed schemas, duplicate IDs and instruction-line injection', () => {
- for (const type of ['add', 'from', 'cmd', 'entrypoint', 'user', 'expose', '__proto__']) assert.throws(() => recipe([row(type, 'value')]));
+ for (const type of ['from', 'cmd', 'entrypoint', 'user', 'expose', '__proto__']) assert.throws(() => recipe([row(type, 'value')]));
  for (const value of ['echo one\nRUN echo two', 'x\rFROM evil', 'x\0x', 'x\x1bx']) assert.throws(() => recipe([row('command', value)]));
  assert.throws(() => recipe([row('command', 'echo'), row('command', 'echo')]));
  assert.throws(() => recipe(Array.from({ length: 101 }, (_, i) => row('command', 'echo', { id: 'r' + i }))));

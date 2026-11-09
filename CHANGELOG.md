@@ -12,6 +12,7 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 - Initial-HTML Open Graph and large-image card metadata with a real 1200×630 homepage preview served by Pages and the static container.
 - Public Imagecraft workbench, with RHEL 9/10 selection and six illustrative starter recipes with compatibility notes.
 - Ordered local-file COPY, LABEL, ARG, ENV, WORKDIR, named builder stages, and earlier-stage artifact copies.
+- First-class ADD steps for local files/opaque archives and HTTPS file URLs (not Git), with octal permissions, directory destinations, local-byte JSON/build-folder exports and source-specific reload validation. The app never downloads URL content or unpacks selected archives; ADD behavior happens at build time.
 - Complete build-folder TAR downloads including exact referenced files, ignore rules, and the selected provider workflow.
 - Versioned portable JSON recipes with embedded files, old-recipe migration, and explicit file-reselection warnings after reload.
 - Optional manually reviewed sha256 base-image pins, cleared when the selected RHEL version changes.
