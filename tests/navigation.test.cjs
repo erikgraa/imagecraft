@@ -29,7 +29,8 @@ function app(url = 'https://imagecraft.test/') {
   const home = element('', 'learn', 'A');
   const compose = element('', 'compose', 'A');
   const controls = [...navigation, home, compose];
-  const headings = Object.fromEntries(['chapter', 'headline', 'subtitle'].map(id => [id, element(id)]));
+  const headings = Object.fromEntries(['chapter', 'headline', 'subtitle', 'warning'].map(id => [id, element(id)]));
+  const projectbar = element('projectbar');
   const events = {};
   const entries = [url];
   let index = 0;
@@ -47,8 +48,12 @@ function app(url = 'https://imagecraft.test/') {
     },
     pipelineProvider: 'gitlab', tab: 'build',
     finishSort(commit) { assert.equal(commit, false); },
+    errors: () => [],
     $: id => headings[id],
-    document: { querySelectorAll(selector) {
+    document: { querySelector(selector) {
+      assert.equal(selector, '.projectbar');
+      return projectbar;
+    }, querySelectorAll(selector) {
       if (selector === '.view') return sections;
       if (selector === '[data-view]') return controls;
       if (selector === '.sidebar [data-view],.path [data-view]') return navigation;
@@ -59,7 +64,7 @@ function app(url = 'https://imagecraft.test/') {
   });
   vm.runInContext(source + '\nshowView(viewFromUrl());', context);
   return {
-    context, sections, navigation, home, compose, headings, entries,
+    context, sections, navigation, home, compose, headings, entries, projectbar,
     click(control, modifiers = {}) {
       let prevented = false;
       control.listeners.click({ button: 0, preventDefault() { prevented = true; }, ...modifiers });
@@ -78,6 +83,8 @@ for (const [query, expected] of [['', 'learn'], ['?view=learn', 'learn'], ['?vie
     assert.deepEqual(state.sections.filter(section => !section.classList.contains('hidden')).map(section => section.dataset.view), [expected]);
     assert.equal(state.navigation.find(control => control.dataset.view === expected).attributes['aria-current'], 'page');
     assert.equal(state.headings.headline.focused, undefined);
+    assert.equal(state.projectbar.hidden, expected !== 'compose');
+    assert.equal(state.navigation.find(control => control.dataset.view === expected).attributes['aria-pressed'], 'true');
   });
 }
 

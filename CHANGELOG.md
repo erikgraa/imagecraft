@@ -15,6 +15,9 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 - Browser-local recipe, theme, and workflow-provider preferences.
 - Containerfile and build-command export, plus GitHub, GitLab, and Azure workflow downloads.
 - Light and dark themes and responsive layouts.
+- Expanded guidance on credentials, local files, builder compatibility, persistent state, SELinux, protected runners, and updates/rollback.
+- Dev-only Playwright/axe browser checks for desktop/mobile and light/dark themes, including real file import/export, keyboard focus, validation errors, and all guided views. Manual screen-reader and user testing remain outstanding.
+- Improved skip/navigation and recipe-row focus, pressed states, associated persistent option/file errors, keyboard-scroll regions, and light-theme contrast.
 - GitHub Pages hosting at imagecraft.graa.dev.
 - Non-root self-hosted container and tested GHCR publication infrastructure.
 - Native Linux amd64 and arm64 container build/HTTP checks and verified two-platform GHCR image publication.
