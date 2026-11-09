@@ -11,24 +11,25 @@ Imagecraft is an independent prototype. These ideas are directions to explore, n
 - [x] Public website and self-hosted container infrastructure.
 - [x] Linux amd64 and arm64 Imagecraft images, with native HTTP checks and verified multi-platform publication.
 - [x] Automated checks and changelog-based release tooling.
+- [x] Ordered local-file `COPY` with source/destination checks and explicit permissions.
+- [x] Complete build-folder TAR downloads with Containerfile, referenced files, ignore rules, and the selected provider workflow.
+- [x] Versioned portable recipe import/export with embedded files. Files stay in memory; browser saves omit file bytes and require reselection after reload.
+- [x] `LABEL`, `ARG`, `ENV`, and `WORKDIR` steps, with validation and per-stage ordering.
+- [x] Optional reviewed base-image digest pins, with explicit manual replacement and no registry access.
+- [x] Named builder stages and artifact `COPY` from earlier builders into later stages or the final OS.
+- [x] Six illustrative starter recipes with compatibility notes.
+- [x] Optional local review hints for recipe mistakes; these do not check package availability or execute builds.
 
 ## Next to explore
-
-- [ ] Add ordered `COPY` file steps for configuration, service units, and scripts, with source/destination checks and explicit file permissions.
-- [ ] Export a complete build folder (Containerfile, referenced files, and ignore rules), so local builds and generated workflows have the same inputs. Keep secrets out of uploaded files and exports.
 - [ ] Validate starter recipes with real RHEL builds and boot tests.
 - [ ] Test generated workflows on each supported provider with entitled runners.
 - [ ] Expand guidance around secrets, persistent state, and safe updates.
-- [ ] Add recipe import/export so work can move between browsers.
-- [ ] Broaden accessibility checks with screen readers and user feedback.
+- [ ] Broaden automated accessibility checks, then test with screen readers and user feedback.
 - [ ] Publish the first numbered release after real-world validation.
 
 ## Later possibilities
 
-- [ ] Add image metadata with `LABEL`, build-time options with `ARG`, and explicit `ENV`/`WORKDIR` steps with clear explanations of how they affect later instructions. Never treat these as secret storage.
-- [ ] Offer digest-pinned base images for reproducible builds and explain how to refresh them safely.
-- [ ] Explore multi-stage builds for copying compiled artifacts into the final OS image.
-- [ ] More starter recipes, with explicit compatibility notes.
-- [ ] Optional checks for package availability and recipe mistakes.
+- [ ] Package-availability checks backed by appropriate RHEL access and version-specific evidence.
+- [ ] Broader builder architecture/ABI, SELinux, persistent-state, update, and rollback validation with real build/boot environments.
 
 Imagecraft does not execute recipes or hold build credentials. Any future integration needs a separate design and review. Preserve bootc startup and user defaults: application-container features such as `CMD`, `ENTRYPOINT`, `USER`, and `EXPOSE` are not a priority for this OS-image editor. Prefer `COPY` over the implicit download/extraction behavior of `ADD` for the initial file workflow.

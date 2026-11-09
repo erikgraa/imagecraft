@@ -5,7 +5,12 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 ## [Unreleased]
 
 ### Added
-- Public Imagecraft workbench, with RHEL 9/10 selection and four starter recipes.
+- Public Imagecraft workbench, with RHEL 9/10 selection and six illustrative starter recipes with compatibility notes.
+- Ordered local-file COPY, LABEL, ARG, ENV, WORKDIR, named builder stages, and earlier-stage artifact copies.
+- Complete build-folder TAR downloads including exact referenced files, ignore rules, and the selected provider workflow.
+- Versioned portable JSON recipes with embedded files, old-recipe migration, and explicit file-reselection warnings after reload.
+- Optional manually reviewed sha256 base-image pins, cleared when the selected RHEL version changes.
+- Optional local recipe review hints that do not verify package availability.
 - Ordered package, command, and service editing with pointer, touch, and keyboard sorting.
 - Browser-local recipe, theme, and workflow-provider preferences.
 - Containerfile and build-command export, plus GitHub, GitLab, and Azure workflow downloads.
@@ -25,5 +30,6 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 
 ### Known limitations
 - Recipes and generated workflows are illustrative and have not been validated by real RHEL builds.
-- Input checks do not verify package availability, command correctness, or successful OS boot.
+- Input checks do not verify package availability, command correctness, or successful OS boot. Builder architecture/ABI compatibility and SELinux/persistent-state behavior still need real validation.
+- Credential detection is best-effort, not a guarantee. Review files and exports; never include secrets. Files remain in memory, while portable downloads deliberately include their bytes.
 - Generated OS workflows require appropriately configured self-hosted Linux runners with Podman and RHEL entitlement. Hosting Imagecraft itself does not require RHEL access.
