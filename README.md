@@ -1,63 +1,73 @@
 # <img src="assets/imagecraft.svg" width="29" height="36" alt=""> Imagecraft
 
-**Build your RHEL image recipe, one step at a time.**
+**Built with intent. Your OS, composed.**
 
-A friendly guide and workbench for choosing packages, adding files, and downloading a ready-to-review recipe. No account needed; nothing is uploaded.
+[![Version 0.5.0](https://img.shields.io/badge/version-0.5.0-c62828)](https://github.com/erikgraa/imagecraft/releases/tag/v0.5.0)
+[![CI](https://github.com/erikgraa/imagecraft/actions/workflows/delivery.yml/badge.svg?branch=main)](https://github.com/erikgraa/imagecraft/actions/workflows/delivery.yml)
+[![Self-hosted: amd64 + arm64](https://img.shields.io/badge/self--hosted-amd64%20%2B%20arm64-374151)](#-run-it-yourself)
+[![RHEL 10 recommended](https://img.shields.io/badge/RHEL%2010-recommended-c62828)](https://imagecraft.graa.dev/)
+
+A friendly RHEL image-mode recipe workbench. Choose what you're building, compose a recipe, save local drafts, and download files to review on your own build host. **No account, no uploads, no builds in your browser.**
 
 **Independent and unaffiliated:** Imagecraft is not affiliated with, endorsed by, or sponsored by Red Hat. It is not a Red Hat product.
 
-![Imagecraft Compose editor with an illustrative web-server recipe and its generated Containerfile side by side.](assets/screenshots/compose.png)
-
-<details>
-<summary>More previews</summary>
-
-**Dark mode**
-
-![The same Compose recipe and Containerfile in dark mode.](assets/screenshots/compose-dark.png)
-
-**Starter Library**
-
-![Starter Library with ready-to-customize image recipe templates.](assets/screenshots/starter-library.png)
-
-**Pipeline**
-
-![Pipeline view with a generated GitHub Actions workflow for an illustrative image.](assets/screenshots/pipeline.png)
-
-</details>
-
-## ✨ Use it online
+## ✨ Get started
 
 **[Open Imagecraft →](https://imagecraft.graa.dev/)**
 
-Start with the Understand field guide, then choose **Start composing**. Already know the basics? Open [Compose](https://imagecraft.graa.dev/?view=compose) or [Pipeline](https://imagecraft.graa.dev/?view=pipeline) directly. The Imagecraft logo returns home without resetting your recipe or preferences.
+1. Answer **“What are you building?”**, choose a RHEL release, and pick a destination. **RHEL 10 is recommended for new images**; RHEL 9 remains available.
+2. Customize your starter in **Compose**: packages, commands, services, files, builder stages, and ordered Containerfile instructions.
+3. **Save draft** to return later, or download a Containerfile, complete build folder, or portable recipe.
+4. Follow **Build → Install → Maintain**, one task at a time. Each terminal copies its whole shell block, including caution comments; copying never runs it.
 
-1. Choose RHEL 9 or 10, or start with a template.
-2. Add packages, commands, services, COPY files, or ADD local files/archives and HTTPS URLs; arrange them in order.
-3. Review and download your Containerfile or a complete build folder. Save a portable recipe to continue in another browser.
-4. Open **Build & deploy** for the QCOW2/raw/vSphere VMDK command wizard, initial SSH-public-key config, installed-host update/switch/rollback walkthrough and OCI/disk signing and verification examples.
+Explore [the field guide](https://imagecraft.graa.dev/?view=learn), [starter library](https://imagecraft.graa.dev/?view=templates), or [pipeline generator](https://imagecraft.graa.dev/?view=pipeline) directly. **System** is the default theme; Light and Dark are saved overrides.
 
-The disk wizard generates `build-disk.sh` and `config.toml`, not a disk or installer in your browser. Use a reviewed published OS reference (optionally pinned by digest), not the recipe's base-image pin. Privileged builds require your own trusted native Linux host; boot, vSphere import and signing remain external validation gates. Disk signatures, bootc pull trust policy and Secure Boot are separate. No private keys or passwords belong in the wizard, recipe or build folder.
+![The welcome page asks what you are building with illustrated workload choices.](assets/screenshots/welcome.png)
 
-Prefer **COPY** for straightforward local copying. **ADD** may unpack local tar archives or download HTTPS content **at build time**; remote archives stay packed. Git sources are not supported. Imagecraft never fetches these URLs or unpacks uploaded archives. Review provenance, contents and permissions on your build host; HTTPS does not pin content.
+![The centered Compose workspace with its recipe editor and generated Containerfile.](assets/screenshots/compose.png)
 
-Local files stay in memory. After reloading, select them again or import your saved portable recipe. Complete build-folder and portable JSON exports include referenced local COPY/ADD bytes; a standalone Containerfile does not.
+<details>
+<summary>📸 More screenshots: dark mode, drafts, starters, build, and pipelines</summary>
 
-**Clear**, next to **Reset**, empties all recipe steps, builder stages and attached files after confirmation. It keeps your RHEL version, reviewed base pin, destination image and preferences. The empty recipe is saved locally and exports the selected bootc base plus its final compatibility check. **Reset** still restores the starter example.
+![Compose with the red-accented dark theme.](assets/screenshots/compose-dark.png)
 
-Imagecraft is a prototype that helps you write recipes—it does not build or run them. Review every download before using it. Building RHEL images needs your own RHEL access and a suitable build machine.
+![My drafts with named, browser-local recipe snapshots.](assets/screenshots/drafts.png)
+
+![Illustrated starter recipes with compatibility notes.](assets/screenshots/starter-library.png)
+
+![The focused Build task with prominent warnings and whole-shell copying.](assets/screenshots/build.png)
+
+![Pipeline generation with explicit runner requirements and safeguards.](assets/screenshots/pipeline.png)
+
+</details>
+
+## 💾 Your work stays local
+
+**My drafts** holds named snapshots, separate from working-copy autosave. Save updates explicitly, use **Save as copy** for a variation, or reopen/delete a snapshot. Opening asks before replacing your working copy; unfinished drafts are allowed, but exports require a valid recipe. Storage errors are shown without erasing existing snapshots.
+
+Drafts have **no cross-device sync** and disappear if browser storage is cleared. Local file bytes stay in memory and are **not saved in drafts or autosave**: reselect files after reopening. Portable JSON and complete build-folder exports deliberately include referenced local file bytes; a standalone Containerfile does not.
+
+## ⚠️ Review before you build
+
+Version 0.5.0 releases the **workbench**, not validated OS images. Recipes, disk commands and provider workflows are illustrative; real RHEL builds, boot tests and runner validation are still outstanding. Building needs your own RHEL access and trusted, appropriately configured Linux hosts.
+
+Never put credentials or private keys in recipes, attached files, or exports. Credential detection is incomplete. Review every download and command, especially privileged builds and reboot steps. The disk wizard generates commands/configuration—not a disk. OCI verification, disk signatures, bootc enforcement and Secure Boot are separate trust boundaries.
+
+Prefer **COPY** for straightforward local files. **ADD** may download HTTPS files or unpack local tar archives **at build time**, never in Imagecraft; review provenance and contents on your build host. See the [field guide](https://imagecraft.graa.dev/?view=learn) and [validation guidance](CONTRIBUTING.md#external-validation-required-evidence-not-automated-claims).
 
 ## 🏠 Run it yourself
 
-With Podman installed:
-
 ```sh
-podman run --rm -p 8080:8080 ghcr.io/erikgraa/imagecraft:edge
+podman run --rm --read-only --cap-drop=ALL --security-opt=no-new-privileges \
+  -p 8080:8080 ghcr.io/erikgraa/imagecraft:0.5.0
 ```
 
-Open **[localhost:8080](http://localhost:8080)**. Docker works too—replace `podman` with `docker`.
+Open **[localhost:8080](http://localhost:8080)**. Docker works too—replace `podman` with `docker`. Images support Linux **amd64 and arm64**. Hosting Imagecraft needs no RHEL entitlement or server-side recipe storage; use a reverse proxy for public HTTPS.
 
-`edge` is the newest development build. Numbered releases will have their own image tags and a stable `latest` tag; no numbered release has been published yet.
+`0.5.0` pins this workbench release. `latest` tracks numbered releases; `edge` tracks development on main. Image tags do not change the RHEL version of your recipe. [Build locally or configure hosting →](CONTRIBUTING.md#container-hosting)
 
 ## 🧭 Follow along
 
-[What's changed](CHANGELOG.md) · [Roadmap](ROADMAP.md) · [Report a problem](https://github.com/erikgraa/imagecraft/issues)
+[Changelog](CHANGELOG.md) · [Roadmap](ROADMAP.md) · [Contribute](CONTRIBUTING.md) · [Report a problem](https://github.com/erikgraa/imagecraft/issues)
+
+CI checks unit/browser/accessibility behavior and both container architectures before delivery to GitHub Pages and GHCR. Dependabot updates npm, Docker and GitHub Actions weekly. No license has been selected yet; no reuse rights are promised.
