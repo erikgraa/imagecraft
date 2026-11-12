@@ -50,6 +50,7 @@ function app(url = 'https://imagecraft.test/') {
     finishSort(commit) { assert.equal(commit, false); },
     errors: () => [],
     renderDrafts() {},
+    paintLifecycle() {},
     $: id => headings[id],
     document: { body: { dataset: {} }, querySelector(selector) {
       assert.equal(selector, '.projectbar');

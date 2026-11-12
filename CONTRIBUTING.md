@@ -40,7 +40,9 @@ The recipe-engine script URL includes a SHA-256 content fingerprint so a cached 
 
 The browser key `imagecraft-ordered-recipe-v1` retains normalized recipe text/settings, not file bytes. Existing rows migrate to the expanded recipe shape without changing their identities/order. Preserve that key and the color/provider keys. Saved local COPY/ADD recipes require reselection after reload; HTTPS ADD needs only its retained URL text. Optional review is local and heuristic; it does **not** query package availability or guarantee secret detection.
 
-Named snapshots use `imagecraft-drafts-v1`, separate from working-copy autosave. Preserve schema/metadata validation, credential checks, stale-update protection, explicit replacement/deletion confirmations and visible storage errors. Opening/importing/templates/reset detach the active snapshot; drafts omit file bytes and are not cross-device storage. The `imagecraft-color-mode` preference accepts System/Light/Dark; missing preferences follow live OS theme changes without writing a default override.
+Package rows may include an optional `comment`: single-line text of at most 500 characters, covered by the same credential checks as other recipe fields. Preserve it through normalization, drafts and schema-version-2 portable recipes, and emit it only as a Containerfile comment for a valid step. Missing comments keep existing recipe output unchanged.
+
+Named snapshots use `imagecraft-drafts-v1`, separate from working-copy autosave. Preserve schema/metadata validation, credential checks, stale-update protection, explicit replacement/deletion confirmations and visible storage errors. Opening/importing/templates/reset detach the active snapshot; drafts omit file bytes and are not cross-device storage. The `imagecraft-color-mode` preference accepts System/Light/Dark; missing or existing System preferences follow live OS theme changes without writing a default override. The single header toggle reflects the resolved dark state through `aria-pressed` and saves a Light/Dark override when activated.
 
 Portable exports use this envelope (the fields below describe the schema, not a ready-to-build recipe):
 

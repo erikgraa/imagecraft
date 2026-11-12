@@ -1,9 +1,10 @@
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
+const fs = require('node:fs/promises');
 
 const key = 'imagecraft-drafts-v1';
-const packages = page => page.getByRole('textbox', { name: 'packages value for step 1', exact: true });
-const library = page => page.getByRole('link', { name: 'My drafts', exact: true }).click();
+const packages = page => page.getByRole('textbox', { name: 'Package names for step 1', exact: true });
+const library = page => page.locator('.sidebar [data-view="drafts"]:visible, .path [data-view="drafts"]:visible').first().click();
 
 test.beforeEach(async ({ page }, testInfo) => {
   await page.addInitScript(mode => localStorage.setItem('imagecraft-color-mode', mode), testInfo.project.name.endsWith('dark') ? 'dark' : 'light');
@@ -20,6 +21,87 @@ async function saveDraft(page, name, copy = false) {
 async function stored(page) {
   return page.evaluate(key => JSON.parse(localStorage.getItem(key)).drafts, key);
 }
+
+test('standalone Containerfile downloads follow the saved draft name, rename and reload', async ({ page }) => {
+  async function downloadAs(filename) {
+    await expect(page.locator('#download-filename')).toHaveText(filename);
+    const expected = await page.evaluate(() => containerfile());
+    const pending = page.waitForEvent('download');
+    await page.locator('#download').click();
+    const download = await pending;
+    expect(download.suggestedFilename()).toBe(filename);
+    expect(await fs.readFile(await download.path(), 'utf8')).toBe(expected);
+  }
+  await saveDraft(page, 'Web baseline');
+  await downloadAs('Web baseline.Containerfile');
+  await saveDraft(page, 'Production web');
+  await downloadAs('Production web.Containerfile');
+  await page.reload();
+  await downloadAs('Production web.Containerfile');
+  await saveDraft(page, 'Release: QA/VM');
+  await downloadAs('Release- QA-VM.Containerfile');
+  await expect(page.locator('#toast')).toContainText('filename adjusted for filesystem safety');
+  await expect(page.locator('#recipe-title')).toHaveText('Release: QA/VM');
+  await saveDraft(page, 'CON');
+  await downloadAs('draft-CON.Containerfile');
+  await expect(page.locator('#toast')).toContainText('filename adjusted for filesystem safety');
+});
+
+test('optional package-step comments survive drafts, duplication, reload and Containerfile export', async ({ page }) => {
+  const comment = page.getByRole('textbox', { name: 'Comment (optional) for step 1', exact: true });
+  await expect(comment).toHaveValue('');
+  await comment.fill('HTTP server and health-check tools');
+  await expect(comment).toBeFocused();
+  await expect(page.locator('#code')).toContainText('# HTTP server and health-check tools');
+  const label = await packages(page).evaluate(el => {
+    const range = document.createRange();
+    range.selectNode(el.parentElement.firstChild);
+    return { bottom: range.getBoundingClientRect().bottom, inputTop: el.getBoundingClientRect().top };
+  });
+  expect(label.inputTop).toBeGreaterThan(label.bottom);
+  await saveDraft(page, 'Documented web');
+  expect((await stored(page))[0].recipe.rows[0].comment).toBe('HTTP server and health-check tools');
+  await page.getByRole('button', { name: 'Duplicate step 1', exact: true }).click();
+  await expect(page.getByRole('textbox', { name: 'Comment (optional) for step 2', exact: true })).toHaveValue('HTTP server and health-check tools');
+  await page.reload();
+  await expect(comment).toHaveValue('HTTP server and health-check tools');
+  const pending = page.waitForEvent('download');
+  await page.locator('#download').click();
+  const download = await pending;
+  expect(await fs.readFile(await download.path(), 'utf8')).toContain('# HTTP server and health-check tools\nRUN dnf install');
+  await comment.fill('');
+  await expect(page.locator('#rows .row').first()).not.toHaveClass(/invalid/);
+});
+
+test('drafts remain easy to reach without a header link and the empty state leads back to the working copy', async ({ page }) => {
+  await expect(page.locator('.top [data-view="drafts"]')).toHaveCount(0);
+  await packages(page).fill('httpd curl jq');
+  await page.getByRole('link', { name: 'Imagecraft home', exact: true }).click();
+  await page.getByRole('link', { name: 'My drafts', exact: true }).click();
+  const empty = page.getByRole('region', { name: 'No drafts yet', exact: true });
+  await expect(empty).toBeVisible();
+  await expect(empty.locator('.nav-art')).toBeVisible();
+  expect(await empty.getByRole('heading').evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(24);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await empty.getByRole('button', { name: 'Go to Compose', exact: true }).click();
+  await expect(packages(page)).toHaveValue('httpd curl jq');
+  await saveDraft(page, 'First checkpoint');
+  await library(page);
+  await expect(empty).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'First checkpoint', exact: true })).toBeVisible();
+  const before = await page.evaluate(() => JSON.stringify(recipe));
+  const start = page.getByRole('button', { name: 'Start a new recipe', exact: true });
+  const resume = page.getByRole('button', { name: 'Return to working copy', exact: true });
+  await expect(start.locator('svg')).toHaveAttribute('aria-hidden', 'true');
+  await expect(resume.locator('svg')).toHaveAttribute('aria-hidden', 'true');
+  await resume.click();
+  await expect(packages(page)).toHaveValue('httpd curl jq');
+  await library(page);
+  await start.click();
+  await expect(page.locator('#welcome-step')).toHaveText('QUESTION 1 OF 3');
+  expect(await page.evaluate(() => JSON.stringify(recipe))).toBe(before);
+});
 
 test('named snapshots update explicitly, copy independently and survive reopening and deletion', async ({ page }) => {
   await saveDraft(page, 'Web baseline');

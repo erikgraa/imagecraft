@@ -75,7 +75,7 @@ test('every direct-link reload supports logo mouse and real keyboard home naviga
 
 test('history and home preserve edited recipe and preferences across reloads', async ({ page }) => {
   await page.goto('/?view=compose');
-  await page.getByRole('textbox', { name: 'packages value for step 1', exact: true }).fill('httpd curl jq');
+  await page.getByRole('textbox', { name: 'Package names for step 1', exact: true }).fill('httpd curl jq');
   await page.locator('[data-version="9"]').click();
   await page.locator('[data-tab="build"]').click();
   await navigate(page, 'pipeline');
@@ -95,7 +95,7 @@ test('history and home preserve edited recipe and preferences across reloads', a
   await visibleView(page, 'pipeline');
   await expect(page.locator('[data-provider="gitlab"]')).toHaveAttribute('aria-pressed', 'true');
   await navigate(page, 'compose');
-  await expect(page.getByRole('textbox', { name: 'packages value for step 1', exact: true })).toHaveValue('httpd curl jq');
+  await expect(page.getByRole('textbox', { name: 'Package names for step 1', exact: true })).toHaveValue('httpd curl jq');
   await expect(page.locator('[data-version="9"]')).toHaveAttribute('aria-pressed', 'true');
   expect(await savedState(page)).toBe(before);
 });
@@ -105,7 +105,7 @@ test('home and every view preserve local file bytes, stage settings and base pin
   page.on('dialog', dialog => dialog.accept());
   await navigate(page, 'templates');
   await page.getByRole('button', { name: 'Use template: Local service unit', exact: true }).click();
-  await page.locator('#view-compose summary').click();
+  await page.locator('.recipe-options > summary').click();
   await page.locator('#base-digest').fill('sha256:' + 'a'.repeat(64));
   await page.locator('#apply-digest').click();
   await page.locator('#stage-name').fill('builder');

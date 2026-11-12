@@ -61,6 +61,7 @@ function normalize(input) {
   if (!row || !line(row.id, 100) || !/^[A-Za-z0-9_-]+$/.test(row.id) || ids.has(row.id) || !TYPES.includes(row.type) || !line(row.value)) fail('Invalid step schema: single-line values and unique IDs are required.');
   ids.add(row.id);
   const clean = { id: row.id, type: row.type, value: row.value };
+  if (row.comment !== undefined) { if (row.type !== 'packages' || !line(row.comment, 500)) fail('Use a single-line package comment of at most 500 characters.'); clean.comment = row.comment; }
   for (const field of ['stage', 'source', 'sourceKind', 'destination', 'mode', 'from']) if (row[field] !== undefined) { if (!line(row[field], 500)) fail('Invalid step field.'); clean[field] = row[field]; }
   if (clean.stage && !result.stages.some(s => s.name === clean.stage)) fail('Step refers to an unknown builder stage.');
   result.rows.push(clean);
@@ -74,6 +75,7 @@ function normalize(input) {
 }
 function rowError(row, recipe) {
  if (!TYPES.includes(row.type) || !line(row.value)) return 'Use a supported step with a single-line value.';
+ if (row.comment !== undefined && (row.type !== 'packages' || !line(row.comment, 500))) return 'Use a single-line package comment of at most 500 characters.';
  if (secretLike(Object.values(row).join(' '))) return 'Possible credential material detected. Remove it; recipe text is not secret storage.';
  const value = row.value.trim();
  if (['copy', 'add', 'artifact'].includes(row.type)) {
@@ -135,7 +137,7 @@ function containerfile(recipe) {
  const stages = [...recipe.stages, { name: 'os', base: baseReference(recipe) }];
  for (const stage of stages) {
   lines.push(`FROM ${stage.base}${recipe.stages.length ? ' AS ' + stage.name : ''}`, '');
-  recipe.rows.forEach((row, index) => { if ((row.stage || 'os') !== stage.name) return; const problem = rowError(row, recipe); lines.push(`# ${String(index + 1).padStart(2, '0')} / ${row.type}`, problem ? '# Incomplete step: ' + problem : instruction(row), ''); });
+  recipe.rows.forEach((row, index) => { if ((row.stage || 'os') !== stage.name) return; const problem = rowError(row, recipe); lines.push(`# ${String(index + 1).padStart(2, '0')} / ${row.type}`); if (!problem && row.type === 'packages' && row.comment?.trim()) lines.push('# ' + row.comment.trim()); lines.push(problem ? '# Incomplete step: ' + problem : instruction(row), ''); });
  }
  lines.push('# Final compatibility check', 'RUN bootc container lint');
  return lines.join('\n') + '\n';

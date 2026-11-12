@@ -57,6 +57,31 @@ test('COPY uses explicit permissions and exact JSON source/destination; reload r
  assert.match(E.errors(stored).join(' '), /Select the referenced local file again/);
 });
 
+test('optional package comments persist and export as comments without changing installation commands', () => {
+ const value = recipe([row('packages', 'httpd curl', { comment: 'HTTP server and health checks' })]);
+ const expected = '# HTTP server and health checks\nRUN dnf install -y httpd curl';
+ assert.ok(E.containerfile(value).includes(expected));
+ assert.equal(E.persisted(value).rows[0].comment, value.rows[0].comment);
+ assert.deepEqual(E.portableImport(E.portableExport(value)), value);
+ assert.ok(new TextDecoder().decode(E.buildEntries(value, generatePipeline('github', value.image))[0].bytes).includes(expected));
+ const plain = recipe([row('packages', 'curl')]);
+ assert.ok(!Object.hasOwn(plain.rows[0], 'comment'));
+ assert.equal(E.containerfile(recipe([row('packages', 'curl', { comment: '' })])), E.containerfile(plain));
+});
+
+test('package comments reject invalid text and credentials without exposing it in the preview', () => {
+ const valid = recipe([row('packages', 'curl')]);
+ for (const comment of ['note\nRUN malicious', 'note\rFROM evil', '\0', 'x'.repeat(501), 42]) {
+  assert.throws(() => recipe([row('packages', 'curl', { comment })]), /package comment/);
+  assert.match(E.rowError({ ...valid.rows[0], comment }, valid), /package comment/);
+ }
+ const sensitive = { ...valid, rows: [row('packages', 'curl', { comment: 'password=not-for-export' })] };
+ assert.throws(() => E.persisted(sensitive), /credentials/);
+ assert.throws(() => E.portableExport(sensitive), /credential/);
+ assert.ok(!E.containerfile(sensitive).includes('not-for-export'));
+ assert.throws(() => recipe([row('command', 'echo hello', { comment: 'not a package step' })]), /package comment/);
+});
+
 test('local ADD preserves opaque archive bytes across JSON/tar exports and requires reselection after reload', () => {
  const archive = E.tar([{ path: 'archive/content.txt', bytes: new Uint8Array([0, 255, 7]) }]);
  const value = recipe([row('add', '', { sourceKind: 'local', source: 'files/content.tar', destination: '/usr/share/example/', mode: '0755' })], { files: { 'files/content.tar': E.bytesToBase64(archive), 'files/unused': data('unused') } });

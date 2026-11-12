@@ -1,6 +1,6 @@
 {
   "name": "imagecraft",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "description": "An approachable RHEL image mode guide and recipe workbench",
   "engines": { "node": ">=22" },
