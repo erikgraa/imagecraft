@@ -11,6 +11,7 @@ This release refines the workbench and its generated sources, not the validation
 ### Changed
 
 - Preselected RHEL 10 in the starting-point flow while retaining explicit RHEL 9 choices and existing saved recipes.
+- Defaulted to OCI-only output without a VM requirement; made bootable-disk creation opt-in for initial installations and linked directly to existing-host updates.
 - Added optional comments to each Install packages step, preserved in drafts and portable exports and emitted as Containerfile comments.
 - Separated recipe field labels from their editor inputs, with a readable Package names label.
 - Simplified the header to one light/dark toggle, retaining system-theme defaults and saved preferences; drafts remain available in workspace navigation and welcome shortcuts.

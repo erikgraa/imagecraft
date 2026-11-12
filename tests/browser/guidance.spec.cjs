@@ -146,7 +146,7 @@ test('build steps show one task at a time, preserve wizard inputs, and disclose 
   await expect(page.locator('#artifact-format')).toHaveValue('raw');
   await expect(page.locator('#artifact-user')).toHaveValue('operator');
   expect(await page.evaluate(() => JSON.stringify(localStorage))).toBe(before);
-  await page.getByRole('button', { name: 'Next: Maintain', exact: true }).click();
+  await page.getByRole('button', { name: 'Update an installed host', exact: true }).click();
   await expect(page.locator('.build-steps [data-build-step="maintain"]')).toBeFocused();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

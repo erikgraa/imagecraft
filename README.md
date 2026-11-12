@@ -15,10 +15,10 @@ A friendly RHEL image-mode recipe workbench. Choose what you're building, compos
 
 **[Open Imagecraft →](https://imagecraft.graa.dev/)**
 
-1. Answer **“What are you building?”**, choose a RHEL release, and pick a destination. **RHEL 10 is selected by default for new images**; RHEL 9 remains available and existing recipes keep their release. **Reset** on the destination or review screen clears just these answers and returns to question 1.
+1. Answer **“What are you building?”**, choose a RHEL release, and pick a destination. **RHEL 10 and OCI image only are selected by default for new images**; RHEL 9 remains available and existing recipes keep their release. No VM or disk is required. **Reset** on the destination or review screen clears just these answers and returns to question 1.
 2. Customize your starter in **Compose**: packages, commands, services, files, builder stages, and ordered Containerfile instructions. Collapse sections to focus, or use **Image map** to visualize declared packages, file destinations, services, and separate builder stages. This is a recipe plan, not a scanned image inventory; **Copy** still copies the whole Containerfile.
 3. **Save draft** to return later. **Take your recipe with you**, above the Compose editor, keeps downloads visible even with sections collapsed: choose the recommended **build folder** to build locally, **Containerfile only** for the instructions, or a **portable recipe** to import into another browser.
-4. Follow **Compose → Build → Publish → Boot → Update**. Boot is the first installation; later versions loop back through Compose, Build, Publish, and installed-host Update without another disk import. Build and Publish share one whole-shell command block, including caution comments; copying never runs it.
+4. Follow **Compose → Build → Publish**, then use the image where you need it. **Boot** offers optional disk creation for initial VM or physical-host installations; existing bootc hosts can go straight to **Update** without a disk import. Later versions loop back through Compose, Build and Publish. Build and Publish share one whole-shell command block, including caution comments; copying never runs it.
 
 Each **Install packages** step has an optional single-line comment explaining its purpose. Comments appear in the Image map and exported Containerfile and survive drafts and portable JSON; they are public recipe text, never secret storage.
 

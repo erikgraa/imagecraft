@@ -30,7 +30,7 @@ for (const review of [false, true]) {
     await answer(page, 'Serve a website');
     await expect(page.getByRole('radio', { name: 'RHEL 10', exact: true })).toBeChecked();
     await answer(page, 'RHEL 10');
-    await expect(page.locator('#welcome-choices input:checked')).toHaveCount(0);
+    await expect(page.getByRole('radio', { name: 'OCI image only', exact: true })).toBeChecked();
     expect(await page.evaluate(() => ({ recipe: JSON.stringify(recipe), storage: JSON.stringify(localStorage) }))).toEqual(before);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
@@ -54,7 +54,7 @@ test('illustrated answers preselect RHEL 10 while allowing an explicit RHEL 9 ch
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await answer(page, 'RHEL 9');
   await expect(page.locator('.welcome-visual svg')).toHaveCount(4);
-  await expect(page.locator('.welcome-badge')).toHaveText(['QCOW2', 'VMDK', 'Raw disk', 'OCI image']);
+  await expect(page.locator('.welcome-badge')).toHaveText(['Default', 'QCOW2', 'VMDK', 'Raw disk']);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await page.getByRole('button', { name: 'Back', exact: true }).click();
@@ -105,7 +105,7 @@ test('welcome preserves existing files and pins until confirmed, and clears a cr
   const before = await page.evaluate(() => JSON.stringify(recipe));
   await answer(page, 'Start with a clean base');
   await answer(page, 'RHEL 9');
-  await answer(page, 'Decide later');
+  await answer(page, 'OCI image only');
   page.once('dialog', dialog => dialog.dismiss());
   await page.getByRole('button', { name: 'Create my recipe' }).click();
   expect(await page.evaluate(() => JSON.stringify(recipe))).toBe(before);
@@ -137,4 +137,28 @@ test('keyboard choices create a web starter without discarding a same-release pi
   await expect(page.locator('#code')).toContainText('httpd curl');
   await expect(page.locator('#rows .row')).toHaveCount(3);
   await expect(page.locator('#download')).toBeEnabled();
+});
+
+test('default starter creates an OCI-only RHEL 10 recipe without entering disk setup', async ({ page }) => {
+  await answer(page, 'Run containers');
+  await expect(page.getByRole('radio', { name: 'RHEL 10', exact: true })).toBeChecked();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.getByRole('radio', { name: 'OCI image only', exact: true })).toBeChecked();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.locator('#welcome-summary')).toContainText('RHEL 10');
+  await expect(page.locator('#welcome-summary')).toContainText('OCI image only');
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: 'Create my recipe' }).click();
+  await expect(page).toHaveURL(/\?view=compose/);
+  await expect(page.locator('#code')).not.toContainText('open-vm-tools');
+  await page.getByRole('button', { name: 'Publish Push to your registry', exact: true }).click();
+  await expect(page.locator('#build-publish')).toBeVisible();
+  await expect(page.locator('#build-install')).toBeHidden();
+  await page.getByRole('button', { name: 'Update an existing host', exact: true }).click();
+  await expect(page.locator('#build-maintain')).toBeVisible();
+  await page.getByRole('button', { name: 'Publish Push to your registry', exact: true }).click();
+  await page.getByRole('button', { name: 'Optional: create a bootable disk', exact: true }).click();
+  await expect(page.locator('#build-install')).toBeVisible();
+  await page.getByRole('button', { name: 'Use an existing bootc host instead', exact: true }).click();
+  await expect(page.locator('#build-maintain')).toBeVisible();
 });
