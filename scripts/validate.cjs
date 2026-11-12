@@ -5,8 +5,15 @@ const { createHash } = require('node:crypto');
 const assert = require('node:assert/strict');
 const YAML = require('yaml');
 const { generatePipeline } = require('../public/pipeline-generator.js');
+const { releaseDetails } = require('./release.cjs');
 const root = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'public', 'index.html'), 'utf8');
+const { version } = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+const lock = JSON.parse(fs.readFileSync(path.join(root, 'package-lock.json'), 'utf8'));
+assert.equal(lock.version, version, 'Keep the lockfile version aligned with package.json');
+assert.equal(lock.packages[''].version, version, 'Keep the root package lock version aligned');
+assert.ok(html.includes(`id="app-version" href="https://github.com/erikgraa/imagecraft/releases/tag/v${version}" target="_blank" rel="noopener">v${version}</a>`), 'Keep the footer release link aligned with package.json');
+releaseDetails(`v${version}`, fs.readFileSync(path.join(root, 'CHANGELOG.md'), 'utf8'));
 let scripts = 0;
 for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
   const src = /src="([^"]+)"/.exec(match[1]);

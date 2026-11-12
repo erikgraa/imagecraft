@@ -54,6 +54,7 @@ test.beforeEach(async ({ page }, info) => {
   await navigate(page, 'pipeline');
   await page.locator('[data-provider="gitlab"]').click();
   await navigate(page, 'build');
+  await page.locator('.build-steps [data-build-step="install"]').click();
   await page.locator('#artifact-format').selectOption('raw');
   await page.locator('#artifact-user').fill('operator');
   await navigate(page, 'compose');

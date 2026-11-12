@@ -49,6 +49,46 @@ test('initial composition, skip link, theme controls and preview semantics', asy
   await page.screenshot({ path: testInfo.outputPath('compose.png'), fullPage: true });
 });
 
+test('workspace is centered and illustrated navigation stays usable across widths', async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  const frame = await page.locator('.layout').boundingBox();
+  expect(frame.width).toBeLessThanOrEqual(1240);
+  expect(frame.x).toBeGreaterThan(300);
+  expect(Math.abs(frame.x - (1920 - frame.x - frame.width))).toBeLessThan(2);
+  const links = page.locator('.sidebar [data-view]');
+  for (const link of await links.all()) {
+    const art = link.locator('.nav-art');
+    await expect(art).toBeVisible();
+    await expect(art).toHaveAttribute('aria-hidden', 'true');
+    expect((await art.boundingBox()).width).toBeGreaterThanOrEqual(48);
+    expect((await link.boundingBox()).height).toBeGreaterThanOrEqual(64);
+  }
+  await links.filter({ hasText: 'Build & deploy' }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.sidebar [data-view="build"]')).toHaveAttribute('aria-current', 'page');
+  await page.locator('.build-steps [data-build-step="install"]').click();
+  const warning = page.getByRole('note', { name: 'Warning: privileged artifact build' });
+  await expect(warning).toBeVisible();
+  const style = await warning.evaluate(el => ({
+    border: parseFloat(getComputedStyle(el).borderLeftWidth),
+    heading: parseFloat(getComputedStyle(el.querySelector('strong')).fontSize),
+    text: parseFloat(getComputedStyle(el.querySelector('p')).fontSize),
+  }));
+  expect(style.border).toBeGreaterThanOrEqual(5);
+  expect(style.heading).toBeGreaterThanOrEqual(16);
+  expect(style.text).toBeGreaterThanOrEqual(14);
+  for (const width of [1024, 820, 601, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await fitsViewport(page);
+    await expect(warning).toBeVisible();
+  }
+  await expect(page.locator('.sidebar')).toBeHidden();
+  await expect(page.locator('.path [data-view="compose"]')).toBeVisible();
+  await section(page, 'compose');
+  await fitsViewport(page);
+  await audit(page);
+});
+
 test('keyboard reordering, boundaries, duplicate and deletion preserve focus', async ({ page }) => {
   const firstId = await page.locator('#rows .row').first().getAttribute('data-id');
   await page.locator('#rows .drag-handle').first().focus();

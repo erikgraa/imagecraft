@@ -4,12 +4,21 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-12
+
+The first numbered release versions the Imagecraft workbench, not generated RHEL images. Real OS builds, boot tests and supported-provider runner validation remain outstanding.
+
 ### Fixed
 
 - Fingerprinted recipe-engine loading prevents a cached pre-ADD helper from breaking recipe rendering and template loading after a deployment; existing recipes and browser preferences are not cleared.
 
 ### Added
 
+- Illustrated welcome questions beginning with "What are you building?", workload/destination badges, and an explicit RHEL 10 recommendation.
+- Browser-local named drafts with save, update, copy, reopen and delete actions, separate working-copy autosave, replacement confirmations and visible storage errors. Drafts omit local file bytes and require file reselection.
+- System/Light/Dark theme choices, defaulting to the system preference and following live OS theme changes.
+- Original illustrated navigation, a centered workspace, prominent safety warnings and the "Built with intent" penguin stamp, preserving the geometric Imagecraft logo.
+- A visible footer release link, package version, version-consistency checks, README badges and refreshed screenshots/social preview.
 - Signing and verification guidance for published OCI images and generated disk files, distinguishing bootc trust policy, detached signatures, checksums and Secure Boot.
 - Guided bootc status, upgrade, target switch and rollback walkthrough with separate staging/reboot expectations and persistent-data warnings.
 - Installation artifact command/config wizard for QCOW2, raw disks and a documented vSphere VMDK import path; generated output is not a tested build or deployment.
@@ -24,7 +33,7 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 - Ordered package, command, and service editing with pointer, touch, and keyboard sorting.
 - Browser-local recipe, theme, and workflow-provider preferences.
 - Containerfile and build-command export, plus GitHub, GitLab, and Azure workflow downloads.
-- Light and dark themes and responsive layouts.
+- Responsive layouts with readable fonts and a red-accented light/dark palette.
 - Expanded guidance on credentials, local files, builder compatibility, persistent state, SELinux, protected runners, and updates/rollback.
 - Dev-only Playwright/axe browser checks for desktop/mobile and light/dark themes, including real file import/export, keyboard focus, validation errors, and all guided views. Manual screen-reader and user testing remain outstanding.
 - Improved skip/navigation and recipe-row focus, pressed states, associated persistent option/file errors, keyboard-scroll regions, and light-theme contrast.
@@ -35,6 +44,9 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 - Weekly Dependabot updates for validation dependencies, the container base image, and GitHub Actions.
 
 ### Changed
+- Build & deploy now presents one focused task at a time: Build, Install or Maintain. Switching tasks preserves in-memory wizard inputs; advanced guidance is expandable.
+- Each terminal has one Copy shell control for its whole block, including safety comments but excluding decorative prompts. Copying executes nothing; host/task blocks remain separate.
+- Simplified the README around getting started, local drafts, safety boundaries and pinned self-hosting; refreshed the roadmap and contributor guidance.
 - The selected prototype is now the default application; discarded design routes are not shipped.
 - Podman is the primary self-hosting example, with Docker as an alternative.
 - The README and app explicitly state that Imagecraft is unaffiliated with Red Hat.

@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Imagecraft — the image mode field guide</title>
-<meta name="description" content="Explore RHEL image mode, compose bootc recipes, and plan VM artifacts, signed releases, updates and rollback with Imagecraft.">
+<meta name="description" content="Choose what you're building, compose RHEL bootc recipes, save local drafts, and plan builds, installation and updates with Imagecraft.">
 <link rel="canonical" href="https://imagecraft.graa.dev/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Imagecraft">
 <meta property="og:title" content="Imagecraft — the image mode field guide">
-<meta property="og:description" content="Explore RHEL image mode, compose bootc recipes, and plan VM artifacts, signed releases, updates and rollback with Imagecraft.">
+<meta property="og:description" content="Choose what you're building, compose RHEL bootc recipes, save local drafts, and plan builds, installation and updates with Imagecraft.">
 <meta property="og:url" content="https://imagecraft.graa.dev/">
 <meta property="og:image" content="https://imagecraft.graa.dev/social-preview.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Imagecraft field guide showing the RHEL image mode workflow and recipe workbench.">
+<meta property="og:image:alt" content="Imagecraft welcome page asking what you are building, with original illustrated workload choices.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Imagecraft — the image mode field guide">
-<meta name="twitter:description" content="Explore RHEL image mode, compose bootc recipes, and plan VM artifacts, signed releases, updates and rollback with Imagecraft.">
+<meta name="twitter:description" content="Choose what you're building, compose RHEL bootc recipes, save local drafts, and plan builds, installation and updates with Imagecraft.">
 <meta name="twitter:image" content="https://imagecraft.graa.dev/social-preview.png">
-<meta name="twitter:image:alt" content="Imagecraft field guide showing the RHEL image mode workflow and recipe workbench.">
+<meta name="twitter:image:alt" content="Imagecraft welcome page asking what you are building, with original illustrated workload choices.">
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:'Segoe UI',sans-serif;background:#f4f2ed;color:#292638;--accent:#6c4bca;--line:#e1dde7;--muted:#898491;--panel:#fff;--field:#faf9fc;--mono:Consolas,'Courier New',monospace}button,input,textarea,select{font:inherit}button{cursor:pointer;color:inherit}button:disabled{cursor:default;opacity:.35}button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}input:focus,textarea:focus,select:focus{outline:2px solid #ac95e83b;border-color:var(--accent)}a{color:inherit}.top{height:80px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;border-bottom:1px solid var(--line);background:#faf9f6;gap:20px}.brand{font-size:25px;font-weight:750;letter-spacing:-1.3px;display:flex;align-items:center;gap:12px}.brand .mark{width:27px;height:27px;display:grid;place-items:center;font-size:20px;background:var(--accent);color:#fff;border-radius:8px;letter-spacing:-3px;padding-right:3px}.brand em{font-style:normal;color:var(--accent)}.badge{font:10px var(--mono);color:var(--accent);background:#ece6f8;border:1px solid #dfd4f3;border-radius:20px;padding:6px 10px}.top-right{display:flex;align-items:center;gap:18px}.switcher{display:flex;align-items:center;gap:4px;padding:3px;border:1px solid var(--line);border-radius:6px;background:#fff}.switcher a{font-size:11px;text-decoration:none;padding:6px 10px;border-radius:4px;color:var(--muted)}.switcher a.active{background:#ece7f5;color:var(--accent)}.layout{max-width:1500px;margin:auto;padding:34px 5% 25px}.sidebar{display:none}.intro{display:flex;align-items:center;justify-content:space-between;gap:25px;margin:10px 0 26px}.eyebrow{font:10px var(--mono);letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:13px}h1{font-size:46px;font-weight:600;line-height:1.08;letter-spacing:-2px;margin:0 0 13px}.serif{font-family:Georgia,serif;font-style:italic;font-weight:400;color:var(--accent)}.sub{font-size:13px;color:var(--muted);line-height:1.8;margin:0;max-width:600px}.intro .stamp{width:92px;height:92px;border:1px solid #d8c9ec;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font:10px/1.9 var(--mono);color:#8f77b5;transform:rotate(10deg);flex-shrink:0}.path{display:flex;gap:0;margin-bottom:25px;border-bottom:1px solid var(--line)}.path button{border:0;border-bottom:2px solid transparent;background:transparent;color:var(--muted);padding:14px 22px;font-size:12px}.path button:first-child{padding-left:0}.path button.selected{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}.path .index{font:10px var(--mono);margin-right:9px;opacity:.7}.projectbar{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:17px}.project-title{font-size:14px;font-weight:600;display:flex;gap:10px;align-items:center}.project-title .folder{color:var(--accent);font-size:20px}.project-title small{font-size:10px;font-weight:400;color:var(--muted);background:#eae7ef;padding:4px 6px;border-radius:3px}.actions{display:flex;gap:8px;align-items:center}.button{border:1px solid var(--line);background:var(--panel);padding:9px 12px;border-radius:5px;font-size:11px;display:inline-flex;gap:7px;align-items:center;justify-content:center;text-decoration:none}.button:hover{background:#f0ebf8}.button.primary{background:var(--accent);border-color:var(--accent);color:#fff}.button.primary:hover{filter:brightness(.94)}.save-status{font:9px var(--mono);color:var(--muted);margin-right:7px}.save-status:before{content:'●';font-size:7px;color:#82a578;margin-right:6px}.workspace{display:grid;grid-template-columns:minmax(340px,1.15fr) minmax(310px,1fr);gap:24px;align-items:start}.editor{min-width:0}.base{border:1px solid #d8cbed;background:#eee8f7;border-radius:7px;padding:16px 19px;display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;gap:15px}.base-info{display:flex;gap:13px;align-items:center}.base-icon{background:#ded2f0;border-radius:5px;width:33px;height:33px;display:grid;place-items:center;color:#8060b2;font:14px var(--mono)}.base strong{display:block;font-size:12px;color:#614882}.base code{font:10px var(--mono);color:#9a83b5;display:block;margin-top:5px}.base select{width:95px;border:1px solid #d1c3e5;color:#6b4d95;background:#f8f5fc;padding:8px;border-radius:4px;font-size:11px}.rows{display:grid;gap:10px;position:relative}.row{border:1px solid var(--line);background:var(--panel);border-radius:7px;overflow:hidden;box-shadow:0 2px 3px #30224403}.row-head{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:10px 13px;border-bottom:1px solid #eeebf3}.row-left{display:flex;align-items:center;gap:10px;min-width:0}.row-number{font:10px var(--mono);color:#b9b1c5;min-width:19px}.kind{font-size:11px;font-weight:600;display:flex;align-items:center;gap:8px}.kind .kind-icon{width:21px;height:21px;border-radius:5px;display:grid;place-items:center;font:11px var(--mono)}.packages .kind-icon{background:#edf2e8;color:#6a8751}.command .kind-icon{background:#eee9f9;color:#8866b6}.service .kind-icon{background:#fff0df;color:#b78b54}.row-tools{display:flex;gap:3px}.tool{width:24px;height:24px;border:0;background:transparent;color:#9f95af;border-radius:4px;font-size:14px;display:grid;place-items:center}.tool:hover{background:#eee9f7;color:var(--accent)}.tool.delete:hover{background:#ffe7e7;color:#a85252}.row-body{padding:12px 13px 13px 43px}.row-body input,.row-body textarea{width:100%;padding:9px 10px;border:1px solid #e8e3f0;border-radius:4px;background:var(--field);font:11px/1.7 var(--mono);color:#665674;resize:vertical;min-height:36px}.row-body textarea{height:43px}.row-note{color:#a59aaf;font-size:10px;margin:6px 0 0;line-height:1.7}.add-row{margin-top:13px;border:1px dashed #cfc4dd;border-radius:6px;padding:12px;display:flex;align-items:center;justify-content:center;gap:7px;background:#f9f7fb}.add-row .add-label{font-size:10px;color:#9d8bae;margin-right:6px}.add-row button{border:1px solid #ded6e9;background:#fff;color:#866c9e;border-radius:4px;padding:7px 10px;font-size:10px}.add-row button:hover{background:#ece5f6}.lint{border:1px solid var(--line);border-radius:6px;background:#f6f4f9;padding:12px 15px;margin-top:13px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#9a8ba9;gap:10px}.lint code{font:10px var(--mono);color:#8b7b99}.lint .lock{color:#a693b6}.preview{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;position:sticky;top:18px}.preview-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #eee9f3}.preview-head strong{font:11px var(--mono);font-weight:400}.live{font:9px var(--mono);color:#8a749f;display:flex;align-items:center;gap:6px}.live:before{content:'';height:5px;width:5px;background:#9b82b3;border-radius:50%}.preview-tabs{display:flex;gap:22px;border-bottom:1px solid #eee9f3;padding:0 18px}.preview-tabs button{padding:12px 0;font:10px var(--mono);border:0;border-bottom:2px solid transparent;background:none;color:#b4a8c1}.preview-tabs button.selected{border-bottom-color:var(--accent);color:#6f5493}.code{padding:18px 0;min-height:370px;overflow:auto;background:#fdfcfe}.code-line{display:flex;font:11px/2 var(--mono);white-space:pre;min-width:max-content;padding-right:18px}.line-number{color:#cfc5d8;min-width:35px;text-align:right;margin-right:17px;user-select:none}.code-text{color:#665475}.code-key{color:#9e6dc5}.comment{color:#b2a5be}.preview-footer{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;font:9px var(--mono);color:#ad9cb9;border-top:1px solid #eee9f3;gap:10px}.mini-copy{background:#f4f0f8;border:1px solid #e5dced;border-radius:4px;padding:6px 10px;font:10px var(--mono);color:#8c719f}.explanation{margin-top:16px;padding:17px 0 0;display:flex;gap:12px;font-size:11px;color:#98879f;line-height:1.8}.explanation .spark{font-size:19px;color:#a88ebc}.explanation strong{color:#796186;font-weight:600;display:block;margin-bottom:3px}.warning{background:#fff1e9;border:1px solid #f1d4c1;padding:12px 15px;border-radius:5px;color:#996447;font-size:11px;line-height:1.8;margin-bottom:16px}.warning.hidden{display:none}.bottom{border-top:1px solid var(--line);margin-top:27px;padding-top:16px;display:flex;justify-content:space-between;font:9px var(--mono);color:#a29aab;gap:18px}.bottom a{text-underline-offset:3px}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#4d356d;color:white;box-shadow:0 4px 18px #0002;padding:12px 20px;border-radius:5px;font-size:12px;z-index:4}.toast.hidden,.view.hidden{display:none}.reading{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:25px;max-width:100%;line-height:1.9;font-size:13px;color:var(--muted)}.reading h2{font-size:20px;letter-spacing:-.5px;color:inherit;margin:0 0 13px}.reading h3{font-size:14px;margin:24px 0 9px}.reading code{font:12px var(--mono);color:var(--accent)}.reading pre{padding:17px;background:var(--field);border:1px solid var(--line);overflow:auto;white-space:pre-wrap}.reading strong{color:var(--accent)}.mini-flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:23px 0}.mini-flow span{padding:10px 16px;background:var(--field);border:1px solid var(--line);border-radius:4px;font:11px var(--mono)}.registry-field{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:13px 16px;border:1px solid var(--line);background:var(--panel);border-radius:6px}.registry-field label{font-size:10px;color:var(--muted);white-space:nowrap}.registry-field input{width:100%;border:0;background:transparent;font:11px var(--mono);color:var(--accent);padding:4px}.row.invalid{border-color:#d29875}.row.invalid .row-note{color:#b17b50}.empty-state{border:1px dashed var(--line);padding:30px 20px;text-align:center;color:var(--muted);font-size:12px;line-height:1.9;border-radius:6px}.layout-note{font-size:10px;color:var(--muted);margin-top:14px;line-height:1.7}
 /* Workbench has an application frame, vertical navigation, and a denser two-pane editor. */
@@ -272,10 +272,12 @@ body[data-design="hybrid"] .callout{margin:20px 0;padding:14px 16px;border:1px s
 body[data-design="hybrid"] .callout strong{display:block;margin-bottom:4px;font-size:12px}
 body[data-design="hybrid"] .callout p{margin:0;color:inherit;font-size:13px}
 body[data-design="hybrid"] .callout-tip{background:#edf3e7;border-color:#cad8bb;border-left-color:#78915b;color:#344629}
-body[data-design="hybrid"] .callout-warning{background:#fff3e2;border-color:#e3caa7;border-left-color:#b07c37;color:#654516}
+body[data-design="hybrid"] .callout-warning{background:#fff0ed;border-color:#dca49b;border-left:6px solid #bc3024;color:#67251c;padding:20px}
+body[data-design="hybrid"] .callout-warning strong{font-size:16px;line-height:1.5;margin-bottom:8px}
+body[data-design="hybrid"] .callout-warning p{font-size:15px;line-height:1.75}
 body[data-design="hybrid"][data-color-mode="dark"] .callout{background:#202d3c;border-color:#3c536d;border-left-color:#89acd5;color:#d0e0f3}
 body[data-design="hybrid"][data-color-mode="dark"] .callout-tip{background:#243120;border-color:#435837;border-left-color:#a7c58b;color:#d7e8c8}
-body[data-design="hybrid"][data-color-mode="dark"] .callout-warning{background:#362b1e;border-color:#665136;border-left-color:#d3ac70;color:#f3dbb4}
+body[data-design="hybrid"][data-color-mode="dark"] .callout-warning{background:#3a2220;border-color:#956157;border-left-color:#ff8e7c;color:#ffe1d9}
 body[data-design="hybrid"] .guide-details{margin:14px 0;border:1px solid var(--line);border-radius:6px;padding:0 16px;background:var(--panel)}
 body[data-design="hybrid"] .guide-details summary{cursor:pointer;padding:14px 0;font-weight:600;font-size:14px;color:var(--ink)}
 body[data-design="hybrid"] .guide-details[open]{padding-bottom:8px}
@@ -288,22 +290,133 @@ body[data-design="hybrid"] .terminal-lights i:nth-child(2){background:#d6b469}
 body[data-design="hybrid"] .terminal-lights i:nth-child(3){background:#91b577}
 body[data-design="hybrid"] .terminal-title{flex:1;min-width:0}
 body[data-design="hybrid"] .terminal-output{padding:10px 14px;outline-offset:-3px}
-body[data-design="hybrid"] .terminal-line{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:10px;align-items:start;padding:7px 0}
+body[data-design="hybrid"] .terminal-line{display:grid;grid-template-columns:12px minmax(0,1fr);gap:10px;align-items:start;padding:7px 0}
 body[data-design="hybrid"] .terminal-prompt{color:#b1c59b;font:12px/26px var(--mono);user-select:none}
 body[data-design="hybrid"] .terminal-line code{display:block;background:none;color:var(--code-ink);padding:0;border:0;overflow-x:auto;white-space:pre;font:12px/26px var(--mono)}
 body[data-design="hybrid"] .terminal-note{color:var(--code-comment);font:11px/1.7 var(--mono);padding:7px 0;overflow-wrap:anywhere}
 body[data-design="hybrid"] .terminal .button{background:var(--code-head);border-color:var(--code-edge);color:var(--code-ink);font-size:11px;padding:5px 8px;white-space:nowrap}
 body[data-design="hybrid"] .terminal .button:hover:not(:disabled){background:#394433;border-color:#718560}
 @media(max-width:600px){body[data-design="hybrid"] .terminal-bar{flex-wrap:wrap}body[data-design="hybrid"] .terminal-output{padding:8px 10px}body[data-design="hybrid"] .terminal-line{gap:7px}body[data-design="hybrid"] .terminal-line code{font-size:11px}body[data-design="hybrid"] .callout{padding:12px}body[data-design="hybrid"] .guide-details{padding-left:12px;padding-right:12px}}
+body[data-design="hybrid"] .top{padding-left:max(28px,calc((100% - 1192px)/2));padding-right:max(28px,calc((100% - 1192px)/2))}
+body[data-design="hybrid"] .layout{max-width:1240px;margin:32px auto 0;padding:0 28px 28px 284px}
+body[data-design="hybrid"] .sidebar{left:24px;top:0;bottom:auto;width:232px;min-height:0;padding:20px 14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 24px #00000008}
+body[data-design="hybrid"] .sidebar button{gap:12px;min-height:68px;padding:10px;border:1px solid transparent;border-radius:10px;color:var(--ink);font-size:15px;font-weight:600}
+body[data-design="hybrid"] .sidebar button:hover{background:var(--soft)}
+body[data-design="hybrid"] .sidebar button.selected{border:1px solid var(--accent);background:var(--soft-red);box-shadow:none}
+body[data-design="hybrid"] .sidebar button.selected:after{display:none}
+body[data-design="hybrid"] .sidebar button .nav-art{width:56px;height:56px;flex-shrink:0;color:var(--accent)}
+body[data-design="hybrid"] .sidebar .library-entry{margin-bottom:20px;background:transparent;border-color:transparent}
+body[data-design="hybrid"] .sidebar .eyebrow{margin-top:18px;margin-bottom:10px}
+body[data-design="hybrid"] .sidebar .eyebrow:first-child{margin-top:0}
+body[data-design="hybrid"] .sidebar .sidebar-note{position:static;margin-top:24px;font-size:12px}
+body[data-design="hybrid"] .intro{margin-top:0}
+body[data-design="hybrid"] .warning{border-left:5px solid var(--accent);font-size:14px;line-height:1.7}
+@media(max-width:900px){body[data-design="hybrid"] .layout{padding-left:248px;padding-right:20px}body[data-design="hybrid"] .sidebar{left:20px;width:208px}body[data-design="hybrid"] .sidebar button{font-size:14px;gap:10px}}
+@media(max-width:600px){body[data-design="hybrid"] .top{padding:15px 17px}body[data-design="hybrid"] .layout{margin:24px auto 0;padding:0 17px 24px}body[data-design="hybrid"] .path button{min-height:44px;font-size:12px}body[data-design="hybrid"] .callout-warning{padding:16px}body[data-design="hybrid"] .intro{margin-top:0}}
+body[data-design="hybrid"][data-view="home"]{--line:#ded7d4;--muted:#59504e;--field:#faf8f7;--bg:#f8f5f3;--ink:#292322;--top:#fcfaf9;--control:#c6bab5;--button-red:#c92d24;font-family:'Segoe UI',Arial,sans-serif}
+body[data-design="hybrid"][data-view="home"][data-color-mode="dark"]{--line:#443634;--muted:#c4b6b2;--panel:#261f1e;--field:#211a19;--bg:#191413;--ink:#f4edeb;--top:#211a19;--control:#77615c;--button-red:#c92d24;--soft:#332725;--soft-red:#3d2421}
+body[data-design="hybrid"][data-view="home"] .layout{max-width:1120px;padding:64px 40px 28px;margin:auto}
+body[data-view="home"] .sidebar,body[data-view="home"] .path,body[data-view="home"] .stamp{display:none}
+body[data-design="hybrid"][data-view="home"] .intro{margin:0 0 36px;max-width:780px}
+body[data-design="hybrid"][data-view="home"] h1{font-size:clamp(36px,5vw,60px);line-height:1.08;letter-spacing:-2px}
+body[data-design="hybrid"][data-view="home"] .sub{font-size:16px;max-width:570px}
+.welcome-grid{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:48px;align-items:start}
+.welcome-card{padding:30px;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:0 12px 40px color-mix(in srgb,var(--ink) 4%,transparent)}
+.welcome-progress{display:flex;gap:6px;margin-bottom:25px}
+.welcome-progress span{height:3px;flex:1;border-radius:2px;background:var(--line)}
+.welcome-progress span.complete{background:var(--accent)}
+.welcome-step{font:600 12px 'Segoe UI',Arial,sans-serif;color:var(--muted);letter-spacing:1px;margin:0 0 10px}
+.welcome-card h2{font-size:25px;letter-spacing:-.6px;line-height:1.25;margin:0 0 10px}
+.welcome-description,.welcome-note{font-size:15px;line-height:1.7;color:var(--muted);margin:0 0 24px}
+.welcome-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;border:0;padding:0;margin:0 0 26px;min-width:0}
+.welcome-option{position:relative;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start;border:1px solid var(--control);border-radius:9px;padding:17px;cursor:pointer;min-width:0}
+.welcome-option:hover{background:var(--field)}
+.welcome-option.recommended{border-color:var(--accent)}
+.welcome-option:has(input:checked){border-color:var(--accent);background:var(--soft-red)}
+.welcome-option:focus-within{outline:2px solid var(--accent);outline-offset:3px}
+.welcome-option input{accent-color:var(--button-red);margin:4px 0 0;flex-shrink:0}
+.welcome-visual{display:grid;place-items:center;width:48px;height:48px;border:1px solid var(--line);border-radius:12px;background:var(--soft-red);color:var(--accent);font-size:26px;font-weight:700;line-height:1}
+.welcome-visual svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.welcome-option-copy{grid-column:1/-1;min-width:0}
+.welcome-badge{display:inline-block;border:1px solid var(--line);border-radius:5px;padding:3px 8px;margin-bottom:10px;color:var(--muted);background:var(--field);font-size:13px;font-weight:600;line-height:1.4}
+.welcome-option.recommended .welcome-badge{border-color:var(--button-red);background:var(--button-red);color:#fff}
+.welcome-option strong{display:block;font-size:16px;margin-bottom:5px}
+.welcome-option small{display:block;font-size:14px;line-height:1.6;color:var(--muted)}
+.welcome-controls{display:flex;justify-content:space-between;align-items:center;gap:12px}
+body[data-design="hybrid"] .welcome-controls .button{padding:12px 20px;font-size:15px;border-radius:7px;min-height:44px}
+.welcome-aside{padding-top:24px}
+.welcome-aside h2{font:600 12px 'Segoe UI',Arial,sans-serif;letter-spacing:1px;color:var(--muted);margin:0 0 22px}
+.welcome-aside ol{list-style:none;padding:0;margin:0;counter-reset:welcome}
+.welcome-aside li{counter-increment:welcome;position:relative;padding:0 0 28px 32px;font-size:16px;line-height:1.6}
+.welcome-aside li:before{content:'0' counter(welcome);position:absolute;left:0;top:2px;font:10px var(--mono);color:var(--accent)}
+.welcome-aside li strong{display:block;margin-bottom:4px}
+.welcome-aside li span{color:var(--muted);font-size:14px}
+.welcome-aside .welcome-note{border-top:1px solid var(--line);padding-top:20px}
+.welcome-shortcuts{display:flex;gap:20px;flex-wrap:wrap;margin-top:24px;font-size:14px;color:var(--muted)}
+.welcome-shortcuts a{text-underline-offset:4px}
+.welcome-summary{display:grid;grid-template-columns:auto 1fr;gap:10px 20px;padding:18px;background:var(--field);border:1px solid var(--line);border-radius:8px;font-size:15px;margin:22px 0}
+.welcome-summary dt{color:var(--muted)}.welcome-summary dd{margin:0;font-weight:600}
+.build-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.build-steps button{min-width:0;padding:16px;text-align:left;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink);font-size:16px;font-weight:600}
+.build-steps button span{display:block;margin-top:6px;font-size:13px;font-weight:400;color:var(--muted)}
+.build-steps button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 3px var(--accent);background:var(--field)}
+.build-panel[hidden]{display:none}
+@media(max-width:600px){.build-steps{gap:6px}.build-steps button{padding:12px 9px;font-size:14px}.build-steps button span{font-size:12px}}
+.draft-toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:22px;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.draft-toolbar-copy{flex:1;min-width:200px}
+.draft-toolbar-copy strong{display:block;font-size:18px;margin-bottom:6px}
+.draft-toolbar-copy p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+body[data-design="hybrid"] .draft-toolbar .button,body[data-design="hybrid"] .draft-card .button,body[data-design="hybrid"] .draft-dialog .button{font-size:14px;min-height:44px;padding:10px 16px}
+.draft-library-note{font-size:15px;line-height:1.7;color:var(--muted);margin:0 0 24px}
+.draft-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:18px;margin-top:24px}
+.draft-card{padding:24px;border:1px solid var(--line);border-radius:12px;background:var(--panel);min-width:0}
+.draft-card h2{font-size:21px;line-height:1.3;margin:16px 0 10px;overflow-wrap:anywhere}
+.draft-card p{font-size:14px;line-height:1.7;color:var(--muted);margin:0 0 18px}
+.draft-card .actions{flex-wrap:wrap}
+.draft-card .welcome-badge{margin:0}
+.draft-empty{padding:30px;border:1px dashed var(--control);border-radius:12px;font-size:16px;line-height:1.7;color:var(--muted)}
+.draft-dialog{width:min(480px,calc(100% - 32px));padding:28px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);font-family:inherit}
+.draft-dialog::backdrop{background:#0008}
+.draft-dialog h2{font-size:24px;margin:0 0 12px}
+.draft-dialog p{font-size:15px;line-height:1.7;color:var(--muted)}
+.draft-dialog label{display:block;font-size:15px;font-weight:600;margin:20px 0 8px}
+.draft-dialog input{width:100%;font:16px 'Segoe UI',Arial,sans-serif;padding:12px;border:1px solid var(--control);border-radius:6px;background:var(--field);color:var(--ink)}
+.draft-dialog .actions{margin-top:22px;justify-content:flex-end}
+body[data-design="hybrid"] .top{flex-wrap:wrap;gap:12px;height:auto;min-height:70px}
+body[data-design="hybrid"] .top-right{flex-wrap:wrap}
+.draft-link{font-size:14px;color:var(--ink);text-underline-offset:4px}
+@media(max-width:700px){body[data-design="hybrid"][data-view="home"] .layout{padding:35px 20px 24px}.welcome-grid{grid-template-columns:1fr;gap:16px}.welcome-aside{padding-top:8px}.welcome-aside ol{display:none}.welcome-aside h2{display:none}.welcome-card{padding:22px}.welcome-choices{grid-template-columns:1fr}.welcome-card h2{font-size:23px}.welcome-summary{gap:12px;font-size:14px}.welcome-shortcuts{gap:16px}}
 </style></head><body>
 <a class="skip-link" href="#headline">Skip to current section</a>
-<header class="top"><a class="brand" href="/" data-view="learn" aria-label="Imagecraft home — Understand"><span class="mark" aria-hidden="true"></span>imagecraft<em>.</em></a><div class="top-right"><div class="mode-switch" role="group" aria-label="Color mode"><button type="button" data-mode="light" aria-pressed="true">☀ Light</button><button type="button" data-mode="dark" aria-pressed="false">◐ Dark</button></div></div></header>
-<main class="layout"><aside class="sidebar" aria-label="Image workflow"><nav aria-label="Workbench sections"><div class="eyebrow">STARTER LIBRARY</div><button data-view="templates" class="library-entry">Templates</button><div class="eyebrow">IMAGE WORKFLOW</div><button data-view="learn">Understand</button><button data-view="compose" class="selected">Compose</button><button data-view="build">Build &amp; deploy</button><button data-view="pipeline">Pipeline</button></nav><div class="sidebar-note"><strong>A container. An entire OS.</strong><br>From your first recipe to a repeatable delivery workflow.<br><br>Independent, unaffiliated prototype.<br>Not affiliated with, endorsed by, or sponsored by Red Hat. Not a Red Hat product.</div></aside>
+<header class="top"><a class="brand" href="/" data-view="home" aria-label="Imagecraft home"><span class="mark" aria-hidden="true"></span>imagecraft<em>.</em></a><div class="top-right"><a class="draft-link" href="?view=drafts" data-view="drafts">My drafts</a><div class="mode-switch" role="group" aria-label="Color mode"><button type="button" data-mode="system" aria-pressed="true">System</button><button type="button" data-mode="light" aria-pressed="false">☀ Light</button><button type="button" data-mode="dark" aria-pressed="false">◐ Dark</button></div></div></header>
+<main class="layout"><aside class="sidebar" aria-label="Image workflow"><nav aria-label="Workbench sections"><div class="eyebrow">YOUR WORKSPACE</div><button data-view="drafts">My drafts</button><div class="eyebrow">STARTER LIBRARY</div><button data-view="templates" class="library-entry">Templates</button><div class="eyebrow">IMAGE WORKFLOW</div><button data-view="learn">Understand</button><button data-view="compose" class="selected">Compose</button><button data-view="build">Build &amp; deploy</button><button data-view="pipeline">Pipeline</button></nav><div class="sidebar-note"><strong>A container. An entire OS.</strong><br>From your first recipe to a repeatable delivery workflow.<br><br>Independent, unaffiliated prototype.<br>Not affiliated with, endorsed by, or sponsored by Red Hat. Not a Red Hat product.</div></aside>
 <div class="intro"><div><div class="eyebrow" id="chapter">THE IMAGE MODE STUDIO / 02</div><h1 id="headline" tabindex="-1">A little more <span class="serif">composed.</span></h1><p class="sub" id="subtitle">Build your operating system, one intention at a time.<br>Add steps. Arrange them. See exactly what your image becomes.</p></div><div class="stamp" id="stamp">BUILD WITH<br>INTENTION<br>↗</div></div>
-<nav class="path" aria-label="Guide sections"><button data-view="learn"><span class="index">01</span> The field guide</button><button data-view="compose" class="selected"><span class="index">02</span> Compose</button><button data-view="build"><span class="index">03</span> Build &amp; deploy</button><button data-view="pipeline"><span class="index">04</span> Pipeline</button><button data-view="templates">Templates</button></nav>
+<nav class="path" aria-label="Guide sections"><button data-view="learn"><span class="index">01</span> The field guide</button><button data-view="compose" class="selected"><span class="index">02</span> Compose</button><button data-view="build"><span class="index">03</span> Build &amp; deploy</button><button data-view="pipeline"><span class="index">04</span> Pipeline</button><button data-view="templates">Templates</button><button data-view="drafts">My drafts</button></nav>
 <div class="projectbar"><div class="project-title"><span class="folder" aria-hidden="true">▱</span><span id="recipe-title">web-server.recipe</span> <small id="step-count">4 steps</small></div><div class="actions"><span class="save-status" id="save-status">saved locally</span><button class="button" data-view="templates">▦ Templates</button><button class="button" id="reset">↺ Reset</button><button type="button" class="button" id="clear" title="Empty recipe steps, builder stages and attached files; keep settings">Clear</button><button class="button primary" id="download">↓ Containerfile</button></div></div>
 <div class="warning hidden" id="warning" role="alert"></div>
-<section class="view" id="view-compose"><div class="workspace"><div class="editor">
+<div class="warning hidden" id="draft-error" role="alert"></div>
+<section class="view hidden" id="view-drafts" aria-label="Saved drafts">
+<p class="draft-library-note">Named snapshots, saved in this browser only. Open a draft to keep shaping it, or save a variation as a copy. Attached file bytes are not saved: select local files again after opening. Export a portable recipe to keep files or move between devices.</p>
+<div class="welcome-shortcuts"><a href="/" data-view="home">Start a new recipe →</a><a href="?view=compose" data-view="compose">Return to working copy</a></div>
+<div class="draft-grid" id="draft-grid"></div>
+</section>
+<section class="view hidden" id="view-home" aria-label="Find your starting point">
+<div class="welcome-grid"><div>
+<form class="welcome-card" id="welcome-form">
+<div class="welcome-progress" id="welcome-progress" aria-hidden="true"></div>
+<p class="welcome-step" id="welcome-step"></p>
+<h2 id="welcome-question" tabindex="-1"></h2>
+<p class="welcome-description" id="welcome-description"></p>
+<fieldset class="welcome-choices" id="welcome-choices" aria-labelledby="welcome-question"></fieldset>
+<div id="welcome-result" hidden><dl class="welcome-summary" id="welcome-summary"></dl><p class="welcome-note">This is an editable starting point, not a validated image. Review packages, permissions and boot behavior on your own entitled Linux build host. Nothing runs here.</p></div>
+<div class="welcome-controls"><button type="button" class="button" id="welcome-back" hidden>Back</button><button type="submit" class="button primary" id="welcome-next">Continue →</button></div>
+</form>
+<div class="welcome-shortcuts"><a href="?view=compose" data-view="compose">Go straight to Compose →</a><a href="?view=learn" data-view="learn">Read the field guide</a><a href="?view=templates" data-view="templates">Browse all starters</a></div>
+</div><aside class="welcome-aside"><h2>A CLEAR PATH TO YOUR OS</h2><ol><li><strong>Tell us the intent.</strong><span>A few choices. No account, no setup.</span></li><li><strong>Shape your recipe.</strong><span>Start small. Every step stays editable.</span></li><li><strong>Build on your terms.</strong><span>Export, review and run on your own host.</span></li></ol><p class="welcome-note">Your answers stay in this tab. Your recipe stays local.<br><br>Independent, unaffiliated prototype. Not a Red Hat product.</p></aside></div>
+</section>
+<section class="view" id="view-compose">
+<div class="draft-toolbar"><div class="draft-toolbar-copy"><strong id="draft-working-title">Your working copy</strong><p id="draft-status" role="status">Name it and save a draft when you reach a useful checkpoint.</p></div><button type="button" class="button primary" id="save-draft">Save draft</button><button type="button" class="button" id="save-draft-copy" hidden>Save as copy</button><button type="button" class="button" data-view="drafts">My drafts</button><button type="button" class="button" data-view="build">Review &amp; build →</button></div>
+<div class="workspace"><div class="editor">
 <div class="base"><div class="base-info"><div class="base-icon">▱</div><div><strong>Base operating system <span class="base-lock">FROM · LOCKED</span></strong><code id="base-ref">registry.redhat.io/rhel10/rhel-bootc:latest</code></div></div><div class="version-switch" role="group" aria-label="Base RHEL version"><button type="button" data-version="9" aria-pressed="false">RHEL 9</button><button type="button" data-version="10" aria-pressed="true">RHEL 10</button></div></div>
 <div class="registry-field"><label for="registry">Image reference</label><input id="registry" aria-describedby="warning" value="quay.io/acme/web-server:latest" spellcheck="false"></div>
 <div id="options-error" class="warning hidden" role="alert" aria-atomic="true"></div>
@@ -334,12 +447,17 @@ body[data-design="hybrid"] .terminal .button:hover:not(:disabled){background:#39
 <h3>Review immutable bases, then test deliberate updates</h3><p>Compose can apply a manually reviewed <code>sha256</code> base digest. Inspect the candidate on your own authenticated host, verify its architecture and provenance, record the old digest, then apply the pin explicitly. It never refreshes automatically and changing RHEL version clears it. A digest fixes the base reference, not entitlement, package repositories, builder outputs or overall reproducibility. Rebuild and boot-test each candidate before promotion; keep the previous known-good image digest and a data recovery plan.</p>
 </details>
 <details class="guide-details"><summary>Credentials, check limits and further reading</summary><p>Keep passwords, tokens, private keys and registry authentication out of portable recipes and committed build folders. Use your CI provider's secret store and provision machine-specific runtime secrets on the target, outside the image. Review every instruction and file byte, including imports: credential and path filters are heuristics, not comprehensive detection. Imagecraft neither accepts build credentials nor executes recipes.</p><p>All six starters are illustrative, not production-validated appliances. Local checks do not verify package availability, shell correctness, entitlement, successful builds or bootability. Automated accessibility checks do not establish WCAG compliance or replace screen-reader and user feedback.</p><p><a href="https://developers.redhat.com/products/rhel-image-mode/getting-started" target="_blank" rel="noopener">Red Hat getting-started guide ↗</a> · <a href="https://bootc-dev.github.io/bootc/filesystem.html" target="_blank" rel="noopener">bootc filesystem and persistent state ↗</a> · <a href="https://bootc-dev.github.io/bootc/man/bootc-upgrade.8.html" target="_blank" rel="noopener">bootc upgrade reference ↗</a></p></details></article></section>
-<section class="view hidden" id="view-build"><article class="reading"><h2>Build on Linux. Test before rollout.</h2><p>Use a disposable Linux host with Podman, Red Hat registry access, package entitlement and write access to your destination registry.</p>
+<section class="view hidden" id="view-build">
+<div class="build-steps" role="group" aria-label="Build and deploy steps"><button type="button" data-build-step="publish" aria-pressed="true" aria-controls="build-publish">1. Build<span>Publish your OS image</span></button><button type="button" data-build-step="install" aria-pressed="false" aria-controls="build-install">2. Install<span>Create a bootable disk</span></button><button type="button" data-build-step="maintain" aria-pressed="false" aria-controls="build-maintain">3. Maintain<span>Update and recover</span></button></div>
+<article class="reading">
+<section class="build-panel" id="build-publish" data-build-panel="publish" aria-labelledby="build-publish-title"><h2 id="build-publish-title">Build and publish your image.</h2><p>Use a disposable Linux host with Podman, Red Hat registry access, package entitlement and write access to your destination registry. Commands are generated here, never run.</p>
 <aside class="callout callout-tip" role="note" aria-label="Tip: use the complete build folder"><strong>Tip · Use the complete build folder</strong><p>Export and inspect the build folder, then extract it into a new empty directory. Run the build there: a standalone Containerfile does not include your local COPY or ADD inputs.</p></aside>
 <aside class="callout" role="note" aria-label="Info: authentication and entitlement are separate"><strong>Info · Login is not package entitlement</strong><p>Registry login authenticates pulls and pushes. Configure RHEL package repository entitlement inside the build separately.</p></aside>
 <div class="warning hidden" id="build-error" role="status"></div>
-<div class="terminal"><div class="terminal-bar"><span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="terminal-title">Build host · Bash</span><button type="button" class="button" id="build-copy" aria-describedby="build-error">Copy commands</button></div><div class="terminal-output" id="build-code" tabindex="0" role="region" aria-label="Build host commands" aria-describedby="build-error"></div></div>
-<h3>First installation · disk artifact wizard</h3><p>Turn your published OS image into a QCOW2, raw disk or vSphere VMDK on your own Linux host. This generates commands and initial-user config, not a disk in the browser. Later updates use bootc, not another disk import.</p>
+<div class="terminal"><div class="terminal-bar"><span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="terminal-title">Build host · Bash</span><button type="button" class="button" id="build-copy" aria-describedby="build-error">Copy shell</button></div><div class="terminal-output" id="build-code" tabindex="0" role="region" aria-label="Build host commands" aria-describedby="build-error"></div></div>
+<div class="actions"><button type="button" class="button primary" data-build-step="install">Next: Install</button><button type="button" class="button" data-view="compose">Back to recipe</button></div></section>
+<section class="build-panel" id="build-install" data-build-panel="install" aria-labelledby="build-install-title" hidden>
+<h2 id="build-install-title">Create your first bootable disk.</h2><p>Choose a format for your published OS image. Download the script and user config, review them, then build on your own Linux host. No disk is built in the browser.</p>
 <div class="artifact-fields" id="artifact-fields">
 <label for="artifact-format">Disk format<select id="artifact-format" aria-describedby="artifact-help artifact-error"><option value="qcow2">QCOW2 · QEMU / KVM</option><option value="raw">Raw · whole-disk image</option><option value="vmdk">vSphere · VMDK import</option></select></label>
 <label for="artifact-arch">Native build and target architecture<select id="artifact-arch" aria-describedby="artifact-help artifact-error"><option value="x86_64">x86_64</option><option value="aarch64">aarch64 · QCOW2 / raw only</option></select></label>
@@ -352,11 +470,15 @@ body[data-design="hybrid"] .terminal .button:hover:not(:disabled){background:#39
 <aside class="callout callout-warning" role="note" aria-label="Warning: privileged artifact build"><strong>Warning · A privileged build is a host trust boundary</strong><p>Use a dedicated, disposable Linux host, rootful Podman and the host's required osbuild/SELinux policies. Review the image first. Registry login is not RHEL package entitlement. The source supplies the default root filesystem; confirm builder and RHEL minor-release support before building.</p></aside>
 <div class="warning hidden" id="artifact-error" role="status"></div>
 <p id="artifact-target"></p>
-<div class="terminal"><div class="terminal-bar"><span class="terminal-title">Artifact host · Bash · copy steps individually</span><button type="button" class="button" id="artifact-download" aria-describedby="artifact-error">↓ Download build-disk.sh</button></div><div class="terminal-output" id="artifact-code" tabindex="0" role="region" aria-label="Disk artifact build commands" aria-describedby="artifact-error"></div></div>
+<div class="terminal"><div class="terminal-bar"><span class="terminal-title">Artifact host · Bash</span><button type="button" class="button" id="artifact-download" aria-describedby="artifact-error">↓ Download build-disk.sh</button></div><div class="terminal-output" id="artifact-code" tabindex="0" role="region" aria-label="Disk artifact build commands" aria-describedby="artifact-error"></div></div>
 <details class="guide-details"><summary>Initial-user config · config.toml</summary><p>Save beside the downloaded script in a new working directory. Review all placeholders first; the script creates a new <code>output</code> directory and refuses to reuse one.</p><div class="actions"><button type="button" class="button" id="artifact-config-copy" aria-describedby="artifact-error">Copy config</button><button type="button" class="button" id="artifact-config-download" aria-describedby="artifact-error">↓ Download config.toml</button></div><pre class="pipeline-output" id="artifact-config" tabindex="0" role="region" aria-label="Initial disk user configuration"></pre></details>
 <details class="guide-details" id="artifact-vsphere" hidden><summary>vSphere import · not an OVA deployment</summary><ol><li>Verify the generated VMDK signature before uploading it to an isolated datastore. Retain the original file and its bundle.</li><li>Create a new destination directory, then clone the uploaded disk with the ESXi shell command below. Replace both datastore paths; never point at an existing VM disk. This example is for a conventional datastore, not a vSAN-specific workflow.</li><li>Create a new x86_64 VM in vSphere and attach the cloned existing disk. Match its firmware, disk controller and guest compatibility to the tested RHEL image and your vSphere release; VMDK alone does not include VM settings or prove bootability.</li><li>Boot-test networking, SSH, storage, services and SELinux before promotion. Conversion changes disk bytes: sign and verify each final distributed descriptor/extent file separately if shipping the converted result.</li></ol><div class="terminal"><div class="terminal-bar"><span class="terminal-title">ESXi shell · replace paths first</span></div><div class="terminal-output" id="artifact-import-code" tabindex="0" role="region" aria-label="vSphere disk clone command"></div></div><p><a href="https://knowledge.broadcom.com/external/article/343140/cloning-and-converting-virtual-machine-di.html" target="_blank" rel="noopener">Broadcom: vmkfstools conversion and controller caveats ↗</a></p></details>
 <details class="guide-details"><summary>Artifact formats, builder versions and provisioning limits</summary><p>QCOW2 is for a compatible QEMU/KVM VM. Raw contains an entire disk, not a filesystem or a safe file to copy over a running disk; choose and verify any hardware target separately. vSphere uses a VMDK plus reviewed VM settings, not an invented OVA export. No installer ISO is generated.</p><p>These are RHEL 9/10 <code>bootc-image-builder</code> compatibility commands. Native architecture must match the host, builder and source image. The displayed legacy output path can differ with a newer builder; verify the actual file before signing/import. Disk layout, size, root filesystem and hypervisor requirements need release-specific review. They are not inferred from the recipe.</p><p><a href="https://osbuild.org/docs/bootc/deprecation-notice/" target="_blank" rel="noopener">Official builder compatibility and migration notice ↗</a> · <a href="https://github.com/osbuild/bootc-image-builder/blob/a686afed6dde14fa5444a3d3be0f269acc783470/README.md" target="_blank" rel="noopener">Legacy types and configuration reference ↗</a> · <a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html-single/using_image_mode_for_rhel_to_build_deploy_and_manage_operating_systems/index" target="_blank" rel="noopener">RHEL 10 release guide ↗</a> · <a href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html-single/using_image_mode_for_rhel_to_build_deploy_and_manage_operating_systems/index" target="_blank" rel="noopener">RHEL 9 release guide ↗</a></p></details>
-<aside class="callout callout-warning" role="note" aria-label="Warning: lint is not a boot test"><strong>Warning · Lint is not a boot test</strong><p>Before rollout, boot a disposable VM. Verify users, services, networking, firewall rules and enforcing SELinux access. Retain build logs, an immutable image digest and a tested previous deployment.</p></aside>
+<aside class="callout callout-warning" role="note" aria-label="Warning: lint is not a boot test"><strong>Warning · Lint is not a boot test</strong><p>Before rollout, boot a disposable VM. Verify users, services, networking, firewall rules and enforcing SELinux access. Retain build logs, an immutable image digest and a tested previous deployment. Review signing and verification in Maintain before promotion.</p></aside>
+<div class="actions"><button type="button" class="button primary" data-build-step="maintain">Next: Maintain</button></div></section>
+<section class="build-panel" id="build-maintain" data-build-panel="maintain" aria-labelledby="build-maintain-title" hidden>
+<h2 id="build-maintain-title">Keep your installed OS healthy.</h2><p>Later updates use bootc, not another disk import. Run these commands on the installed host, after staging and backup checks.</p>
+<aside class="callout callout-warning" role="note" aria-label="Warning: review before rebooting"><strong>Review before rebooting</strong><p>The shell blocks include a reboot. Inspect the staged deployment first, use a maintenance window, then reconnect to check the booted OS and application health. Copying a block does not run it; do not paste it blindly.</p></aside>
 <h3>Update an installed host</h3><ol><li>Boot-test the published candidate in staging. Back up application data and retain the previous known-good digest.</li><li><code>bootc status</code> distinguishes the booted, staged and rollback deployments. <code>upgrade</code> stages the newest image at the current tracked target; it does not change the running OS. A fixed digest has no newer content to discover.</li><li>Inspect the staged deployment, then reboot explicitly in a maintenance window. Check the booted digest and application health afterward. These examples avoid <code>--apply</code>, which can reboot automatically.</li></ol>
 <div class="terminal"><div class="terminal-bar"><span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="terminal-title">Installed host · Update</span></div><div class="terminal-output" id="update-code" tabindex="0" role="region" aria-label="Installed host update commands">sudo bootc status
 sudo bootc upgrade
@@ -366,7 +488,7 @@ sudo systemctl reboot
 # After reconnecting, inspect the booted deployment and service health:
 sudo bootc status</div></div>
 <details class="guide-details"><summary>Switch the tracked target · deliberate release promotion</summary><p>To promote a different repository, tag or immutable release, <code>bootc switch</code> stages that target for the next boot. Replace the digest placeholder with the candidate's verified published OS digest, not the Containerfile base pin. Future <code>upgrade</code> calls against a pinned digest are a no-op; promote the next digest deliberately. Provision target-host registry authentication outside the image; builder-host login is not transferred to installed hosts.</p><div class="terminal"><div class="terminal-bar"><span class="terminal-title">Installed host · target change · review trust policy first</span></div><div class="terminal-output" id="switch-code" tabindex="0" role="region" aria-label="Installed host target switch commands"></div></div><p>Check the installed RHEL bootc version's target-change and signature-policy requirements first. See <a href="https://bootc.dev/bootc/man/bootc-switch.8.html" target="_blank" rel="noopener">bootc switch ↗</a> and <a href="https://bootc.dev/bootc/man/bootc-upgrade.8.html" target="_blank" rel="noopener">bootc upgrade ↗</a>.</p></details>
-<h3>Roll back if needed</h3><p>Rollback needs an available previous deployment, discards a staged update and selects the previous OS for the next boot. Inspect before rebooting, then verify the active digest and service health. Coordinate automatic update agents so they do not immediately undo your rollback.</p>
+<details class="guide-details"><summary>Roll back if needed</summary><p>Rollback needs an available previous deployment, discards a staged update and selects the previous OS for the next boot. Inspect before rebooting, then verify the active digest and service health. Coordinate automatic update agents so they do not immediately undo your rollback.</p>
 <aside class="callout callout-warning" role="note" aria-label="Warning: rollback does not restore data"><strong>Warning · Rollback does not restore data</strong><p>It does not restore <code>/var</code> or undo schema migrations. Back up data and test application compatibility with both deployments before rollout.</p></aside>
 <div class="terminal"><div class="terminal-bar"><span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="terminal-title">Installed host · Rollback</span></div><div class="terminal-output" id="rollback-code" tabindex="0" role="region" aria-label="Installed host rollback commands">sudo bootc status
 sudo bootc rollback
@@ -376,14 +498,17 @@ sudo systemctl reboot
 # After reconnecting, inspect the booted deployment and service health:
 sudo bootc status</div></div>
 <details class="guide-details"><summary>Rollback and local configuration</summary><p><code>/var</code> remains persistent across OS deployments, including database migrations. Rollback also reuses the prior deployment's <code>/etc</code>; recent local configuration changes do not automatically follow it. Test both application and configuration compatibility and maintain separate data backups.</p><p><a href="https://bootc.dev/bootc/man/bootc-rollback.8.html" target="_blank" rel="noopener">bootc rollback and update-agent caveats ↗</a></p></details>
-<h3>Sign and verify the release</h3><p>Use an already provisioned signing key and an independently trusted public key. These examples only generate commands: Imagecraft never handles private keys, signs files or publishes signatures. Replace paths and the verified OCI digest before use; install a compatible Cosign version on your own release host.</p>
+</details>
+<details class="guide-details" id="release-verification"><summary>Signing and verification · before rollout</summary><p>Use an already provisioned signing key and an independently trusted public key. These examples only generate commands: Imagecraft never handles private keys, signs files or publishes signatures. Replace paths and the verified OCI digest before use; install a compatible Cosign version on your own release host.</p>
 <aside class="callout callout-warning" role="note" aria-label="Warning: three different trust boundaries"><strong>Warning · Image signatures, disk signatures and Secure Boot are different</strong><p><code>cosign verify</code> checks an OCI release now; it does not configure bootc pull enforcement. A disk signature authenticates those exact file bytes, not its kernel or bootloader. A checksum alone proves neither authorship nor authenticity. Secure Boot needs its own supported boot-component signing and trust enrollment.</p></aside>
 <details class="guide-details"><summary>Published OCI image · sign and verify by digest</summary><p>After publishing the tested image, sign its verified immutable digest. Signing requires registry access to publish signature material. Do not distribute the private key. Obtain the verification key through a trusted channel, not just alongside an untrusted image.</p><div class="terminal"><div class="terminal-bar"><span class="terminal-title">Release host · OCI · replace key paths and digest</span></div><div class="terminal-output" id="sign-image-code" tabindex="0" role="region" aria-label="OCI image signing and verification commands"></div></div><p><a href="https://docs.sigstore.dev/cosign/signing/signing_with_containers/" target="_blank" rel="noopener">Cosign image signing ↗</a> · <a href="https://docs.sigstore.dev/cosign/verifying/verify/" target="_blank" rel="noopener">Signature verification ↗</a></p></details>
 <details class="guide-details"><summary>bootc enforcement · configure and test host trust separately</summary><p>bootc uses the containers/image trust policy at <code>/etc/containers/policy.json</code>. Generic upstream defaults may permit unsigned images. A successful standalone Cosign check is not an enforced policy for future installs, switches or upgrades.</p><p>Configure a reviewed, repository-scoped <code>sigstoreSigned</code> policy with your trusted public key and a matching signed identity, plus the required registry signature-discovery configuration. Preserve existing trusted vendor policies; do not blindly replace the global policy. Current Cosign uses OCI 1.1 referrers, while containers/image deployments may require <code>use-sigstore-attachments</code> and a different signature-storage convention. Check your exact RHEL, bootc, containers/image, registry and Cosign versions for interoperability before choosing the signing workflow.</p><p>Current upstream documents <code>bootc switch --enforce-container-sigpolicy</code>; release availability and semantics must be checked on the installed host. Do not assume one flag or an external Cosign verification makes every future pull enforce signatures. On a disposable target, prove that your intended signed release succeeds and unsigned, wrong-key and wrong-repository candidates are rejected before rollout.</p><p><a href="https://github.com/bootc-dev/bootc/blob/main/docs/src/bootc-security.7.md" target="_blank" rel="noopener">bootc security model ↗</a> · <a href="https://github.com/containers/image/blob/main/docs/containers-policy.json.5.md" target="_blank" rel="noopener">containers/image signature policy ↗</a> · <a href="https://github.com/containers/image/blob/main/docs/containers-registries.d.5.md" target="_blank" rel="noopener">Registry signature discovery ↗</a></p></details>
 <details class="guide-details"><summary>Disk files · detached signature, then checksum</summary><p>After building, sign the exact QCOW2, raw or VMDK file and retain its <code>disk.sigstore.json</code> bundle. Recipients verify the bundle with an independently trusted public key before import or writing any target. A checksum is an additional integrity check, not a substitute for signature verification. Paths below are legacy builder examples: confirm the actual output first.</p><div class="terminal"><div class="terminal-bar"><span class="terminal-title">Release host · disk · replace key paths</span></div><div class="terminal-output" id="sign-disk-code" tabindex="0" role="region" aria-label="Disk file signing verification and checksum commands"></div></div><p>Distribute the disk, bundle and checksum; re-sign after any conversion or other byte change. For a multi-file VMDK, sign and verify every distributed descriptor and extent separately. These signatures do not enforce boot-time authenticity. Cosign may contact a transparency service and disclose signing metadata; review organizational policy before signing. Keyless alternatives must constrain both certificate identity and OIDC issuer when verifying.</p><p><a href="https://docs.sigstore.dev/cosign/signing/signing_with_blobs/" target="_blank" rel="noopener">Cosign blob signing ↗</a> · <a href="https://docs.sigstore.dev/cosign/verifying/verify/" target="_blank" rel="noopener">Bundle verification ↗</a></p></details>
+</details></section>
 <p>Copying does not run anything. Commands run on your own Linux or installed bootc host; Imagecraft performs no build, signature, deployment or boot validation. See the <a href="https://bootc-dev.github.io/bootc/" target="_blank" rel="noopener">official bootc documentation ↗</a> and your RHEL release's instructions.</p></article></section>
 <section class="view hidden" id="view-pipeline"><article class="reading"><h2>Your recipe, on repeat.</h2><p>Generate a build-and-publish pipeline for a preconfigured self-hosted Linux runner.</p><aside class="callout callout-tip" role="note" aria-label="Tip: commit your build folder"><strong>Tip · Commit your build folder</strong><p>Extract and commit the complete export, including referenced files, at the repository root. CI builds that committed recipe, not unsaved browser edits.</p></aside><div class="provider-switch" role="group" aria-label="Pipeline provider"><button type="button" data-provider="github" aria-pressed="true">GitHub Actions</button><button type="button" data-provider="gitlab" aria-pressed="false">GitLab CI</button><button type="button" data-provider="azure" aria-pressed="false">Azure DevOps</button></div><div class="pipeline-setup"><h3>Before your first run</h3><ul id="pipeline-requirements"></ul><p id="pipeline-target"></p><aside class="callout callout-warning" role="note" aria-label="Warning: trusted builds only"><strong>Warning · Trusted builds only</strong><p>Do not run untrusted pull-request recipes on an entitled runner: build commands can access its resources and credentials. Use your provider's secret store, not recipe fields, uploaded files or source control.</p></aside><details class="guide-details"><summary>Runner and credential safeguards</summary><p>Use a disposable or dedicated runner with Bash, Podman and RHEL package entitlement. Restrict access to trusted, protected branches; scope tokens, protect environments, isolate workloads and rotate credentials. Use masked/protected secret variables where supported.</p><p>The pipeline's private temporary registry-auth file is cleaned up on exit, but does not sandbox a build. Keep secrets out of logs, exported recipes and build context. Credential filters are incomplete; provision runtime secrets on the installed host, outside the image.</p></details></div><div class="warning hidden" id="pipeline-error" role="alert"></div><div class="pipeline-toolbar"><code id="pipeline-filename"></code><div class="actions"><button type="button" class="button" id="pipeline-copy">Copy YAML</button><button type="button" class="button primary" id="pipeline-download">↓ Download YAML</button></div></div><pre class="pipeline-output" id="pipeline-code" tabindex="0" role="region" aria-label="Generated pipeline YAML"></pre><div class="mini-flow"><span>Review</span>→<span>Build</span>→<span>Boot-test</span>→<span>Sign</span>→<span>Publish</span></div><aside class="callout" role="note" aria-label="Info: build and publish only"><strong>Info · Build and publish only</strong><p>These starters do not add boot tests, scanning, signing or protected promotion. YAML validation is not proof of runner execution, entitlement or bootability.</p></aside><details class="guide-details"><summary>Before production: delivery gates</summary><ol><li>Build from reviewed source and pin production dependencies.</li><li>Scan the image and retain its SBOM.</li><li>Boot a disposable VM and verify your enabled services.</li><li>Test upgrade and rollback, including application compatibility.</li><li>Sign and publish an immutable image version.</li><li>Promote to staging, then roll out through controlled production rings.</li></ol><p>These starters have not been validated by actual supported-provider runner runs. Test each provider independently on its specified runner; retain run links, tool versions, image digests and redacted build/boot logs. Commit-and-run tags avoid overwriting <code>latest</code>; enable registry immutability for enforced immutable releases.</p></details></article></section>
-<footer class="bottom"><span id="footer-label">IMAGECRAFT / STUDIO EXPLORATION</span><span>Independent · Unaffiliated with Red Hat · <a href="https://github.com/erikgraa/imagecraft" target="_blank" rel="noopener">Source & roadmap ↗</a> · <a href="https://bootc-dev.github.io/bootc/" target="_blank" rel="noopener">bootc docs ↗</a></span></footer></main><div class="toast hidden" id="toast" role="status"></div>
+<footer class="bottom"><span><span id="footer-label">IMAGECRAFT / THE IMAGE MODE FIELD GUIDE</span> · <a id="app-version" href="https://github.com/erikgraa/imagecraft/releases/tag/v0.5.0" target="_blank" rel="noopener">v0.5.0</a></span><span>Independent · Unaffiliated with Red Hat · <a href="https://github.com/erikgraa/imagecraft" target="_blank" rel="noopener">Source & roadmap ↗</a> · <a href="https://bootc-dev.github.io/bootc/" target="_blank" rel="noopener">bootc docs ↗</a></span></footer></main><div class="toast hidden" id="toast" role="status"></div>
+<dialog class="draft-dialog" id="draft-dialog" aria-labelledby="draft-dialog-title"><form id="draft-save-form"><h2 id="draft-dialog-title">Save a draft</h2><p id="draft-save-note">This saves a named snapshot in this browser, not a built or validated image. Local file bytes are not included. Review recipe text for secrets; detection is incomplete.</p><label for="draft-name">Draft name</label><input id="draft-name" required maxlength="80" aria-describedby="draft-save-note" autocomplete="off"><p id="draft-save-error" class="warning" role="alert" hidden></p><div class="actions"><button type="button" class="button" id="draft-save-cancel">Cancel</button><button type="submit" class="button primary">Save snapshot</button></div></form></dialog>
 <script src="./recipe-order.js"></script>
 <script src="./pipeline-generator.js"></script>
 <script src="./recipe-engine.js?v=c53fc9d44479"></script>
@@ -399,6 +524,12 @@ function makePenguin(){
  svg.innerHTML='<ellipse cx="32" cy="70" rx="23" ry="3" fill="currentColor" opacity=".12"/><path d="M20 32C8 38 7 49 10 54l11-7M44 32c12 6 13 17 10 22l-11-7" fill="#26342b"/><path d="M32 5c-12 0-17 12-16 25C10 44 13 65 32 67c19-2 22-23 16-37C49 17 44 5 32 5Z" fill="#26342b"/><ellipse cx="32" cy="46" rx="15" ry="19" fill="#fbfaf1"/><ellipse cx="25" cy="23" rx="6" ry="8" fill="#fbfaf1"/><ellipse cx="39" cy="23" rx="6" ry="8" fill="#fbfaf1"/><circle cx="26" cy="24" r="2" fill="#26342b"/><circle cx="38" cy="24" r="2" fill="#26342b"/><path d="m25 31 7-4 7 4-7 5Z" fill="#dc9b3d"/><path d="M18 63c-5 0-10 5-8 7h18v-5ZM46 63c5 0 10 5 8 7H36v-5Z" fill="#dc9b3d"/>';
  return svg;
 }
+function makeNavigationArt(name){
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.classList.add('nav-art');svg.setAttribute('viewBox','0 0 56 56');svg.setAttribute('aria-hidden','true');
+ svg.innerHTML='<rect x="5" y="5" width="40" height="40" rx="9" fill="var(--soft-red)" stroke="var(--line)"/><rect x="11" y="11" width="40" height="40" rx="9" fill="var(--panel)" stroke="currentColor"/><circle cx="45" cy="11" r="4" fill="currentColor"/>';
+ const icon=makeIcon(name);if(name==='drafts')icon.firstElementChild.setAttribute('d','M3 7h7l2 2h9v12H3V7ZM6 7V3h10v6M7 13h10M7 17h7');icon.classList.remove('ui-icon');icon.setAttribute('x','19');icon.setAttribute('y','19');icon.setAttribute('width','24');icon.setAttribute('height','24');svg.append(icon);
+ return svg;
+}
 const theme='workbench';
 document.body.dataset.theme=theme;
 document.body.dataset.design='hybrid';
@@ -407,31 +538,117 @@ document.getElementById('footer-label').textContent='IMAGECRAFT / THE IMAGE MODE
 document.getElementById('chapter').textContent='02 / COMPOSE';
 document.getElementById('headline').textContent='Your OS, composed.';
 document.getElementById('subtitle').innerHTML='Build your operating system, one step at a time.<br>Add packages and commands. Arrange the recipe. Inspect every instruction.';
-const linuxLabel=document.createElement('span');linuxLabel.textContent='LINUX AT HEART';document.getElementById('stamp').replaceChildren(makePenguin(),linuxLabel);
-document.querySelectorAll('.sidebar [data-view]').forEach(button=>button.prepend(makeIcon(button.dataset.view)));
+const intentLabel=document.createElement('span');intentLabel.textContent='BUILT WITH INTENT';document.getElementById('stamp').replaceChildren(makePenguin(),intentLabel);
+document.querySelectorAll('.sidebar [data-view]').forEach(button=>button.prepend(makeNavigationArt(button.dataset.view)));
 document.querySelector('.base-icon').replaceChildren(makeIcon('compose'));
 document.querySelectorAll('[data-add]').forEach(button=>button.prepend(makeIcon(button.dataset.add)));
-function setColorMode(mode){
- document.body.dataset.colorMode=mode==='dark'?'dark':'light';
- document.querySelectorAll('[data-mode]').forEach(button=>{const selected=button.dataset.mode===document.body.dataset.colorMode;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
- try{localStorage.setItem('imagecraft-color-mode',document.body.dataset.colorMode);}catch(e){}
+const systemColorMode=window.matchMedia('(prefers-color-scheme: dark)');
+let colorModePreference='system';
+function setColorMode(mode,persist=true){
+ colorModePreference=['system','light','dark'].includes(mode)?mode:'system';
+ document.body.dataset.colorMode=colorModePreference==='system'?(systemColorMode.matches?'dark':'light'):colorModePreference;
+ document.querySelectorAll('[data-mode]').forEach(button=>{const selected=button.dataset.mode===colorModePreference;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected));});
+ if(persist)try{localStorage.setItem('imagecraft-color-mode',colorModePreference);}catch(error){toast('Theme changed for this tab, but the preference could not be saved.');}
 }
-let initialColorMode='light';
-try{initialColorMode=localStorage.getItem('imagecraft-color-mode')||'light';}catch(e){}
-setColorMode(initialColorMode);
+let initialColorMode='system';
+try{initialColorMode=localStorage.getItem('imagecraft-color-mode')||'system';}catch(e){}
+setColorMode(initialColorMode,false);
+systemColorMode.addEventListener('change',()=>{if(colorModePreference==='system')setColorMode('system',false);});
 document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>setColorMode(button.dataset.mode)));
 const $=id=>document.getElementById(id);
+function showBuildStep(step){
+ document.querySelectorAll('[data-build-panel]').forEach(panel=>{panel.hidden=panel.dataset.buildPanel!==step;});
+ document.querySelectorAll('.build-steps [data-build-step]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.buildStep===step)));
+}
+document.querySelectorAll('[data-build-step]').forEach(button=>button.addEventListener('click',()=>{
+ showBuildStep(button.dataset.buildStep);
+ if(!button.closest('.build-steps'))document.querySelector('.build-steps [data-build-step="'+button.dataset.buildStep+'"]').focus();
+}));
 const storageKey='imagecraft-ordered-recipe-v1';
+const draftsKey='imagecraft-drafts-v1';
+let activeDraft=null,draftSaveAsCopy=false;
 let pipelineProvider='github';
 try{const provider=localStorage.getItem('imagecraft-pipeline-provider');if(['github','gitlab','azure'].includes(provider))pipelineProvider=provider;}catch(e){}
 const defaults=()=>({name:'web-server.recipe',version:'10',image:'quay.io/acme/web-server:latest',rows:[{id:'r1',type:'packages',value:'httpd curl'},{id:'r2',type:'command',value:'printf \'Hello from imagecraft\\n\' > /var/www/html/index.html'},{id:'r3',type:'service',value:'httpd'},{id:'r4',type:'command',value:'mkdir -p /var/log/imagecraft'}]});
-let recipe=RecipeEngine.normalize(defaults()),tab='container',view='learn',timer;
+let recipe=RecipeEngine.normalize(defaults()),tab='container',view='home',timer;
 document.querySelectorAll('button[data-view]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.view===view)));
 function optionsError(message,ids=[]){$('options-error').textContent=message;$('options-error').classList.toggle('hidden',!message);for(const id of ['base-digest','stage-name','stage-base','recipe-file']){$(id).setAttribute('aria-invalid',String(ids.includes(id)));$(id).setAttribute('aria-describedby','options-error');}}
 try{const saved=JSON.parse(localStorage.getItem(storageKey));if(saved)recipe=RecipeEngine.persisted(saved);}catch(e){}
 syncVersionButtons();$('registry').value=recipe.image;
 function syncVersionButtons(){document.querySelectorAll('[data-version]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.version===recipe.version)))}
-function save(){try{localStorage.setItem(storageKey,JSON.stringify(RecipeEngine.persisted(recipe)));$('save-status').textContent=Object.keys(recipe.files).length?'text saved · files in memory only':'saved locally';}catch(e){try{localStorage.removeItem(storageKey);}catch(ignore){}$('save-status').textContent='save paused · review possible credentials or storage limits';}}
+function save(){try{localStorage.setItem(storageKey,JSON.stringify(RecipeEngine.persisted(recipe)));$('save-status').textContent=Object.keys(recipe.files).length?'text saved · files in memory only':'saved locally';}catch(e){try{localStorage.removeItem(storageKey);}catch(ignore){}$('save-status').textContent='save paused · review possible credentials or storage limits';}paintDraftStatus();}
+function readDrafts(){
+ const stored=localStorage.getItem(draftsKey);
+ if(stored===null)return [];
+ const document=JSON.parse(stored);
+ if(!document||document.format!=='imagecraft-drafts'||document.schemaVersion!==1||!Array.isArray(document.drafts))throw new Error('The saved draft library has an unsupported format. Existing storage has not been changed.');
+ const ids=new Set();
+ return document.drafts.map(draft=>{
+  if(!draft||typeof draft.id!=='string'||!draft.id||ids.has(draft.id)||typeof draft.name!=='string'||!draft.name.trim()||draft.name.length>80||RecipeEngine.secretLike(draft.name)||!Number.isFinite(draft.updatedAt))throw new Error('The saved draft library contains an invalid entry. Existing storage has not been changed.');
+  ids.add(draft.id);
+  return {id:draft.id,name:draft.name,updatedAt:draft.updatedAt,recipe:RecipeEngine.persisted(draft.recipe)};
+ });
+}
+function writeDrafts(drafts){localStorage.setItem(draftsKey,JSON.stringify({format:'imagecraft-drafts',schemaVersion:1,drafts}));}
+function draftError(message){$('draft-error').textContent=message;$('draft-error').classList.toggle('hidden',!message);}
+function paintDraftStatus(){
+ $('draft-working-title').textContent=activeDraft?activeDraft.name:'Your working copy';
+ $('save-draft-copy').hidden=!activeDraft;
+ let matches=false;
+ if(activeDraft)try{matches=JSON.stringify(RecipeEngine.persisted(recipe))===JSON.stringify(activeDraft.recipe);}catch(error){matches=false;}
+ $('draft-status').textContent=activeDraft?(matches?'Matches your saved snapshot. Further edits stay in the working copy until you save again.':'Changes since your saved snapshot. Save draft to update it, or save a separate copy.'):'Shape the steps, then name and save a draft. Your working copy is separate from saved snapshots.';
+}
+function renderDrafts(){
+ $('draft-grid').replaceChildren();draftError('');
+ let drafts;
+ try{drafts=readDrafts();}catch(error){draftError('Cannot read drafts: '+error.message);return;}
+ if(!drafts.length){const empty=document.createElement('p');empty.className='draft-empty';empty.textContent='No saved drafts yet. Start with a recipe, make it yours, then choose Save draft in Compose.';$('draft-grid').append(empty);return;}
+ for(const draft of drafts.sort((a,b)=>b.updatedAt-a.updatedAt)){
+  const card=document.createElement('article');card.className='draft-card';
+  const badge=document.createElement('span');badge.className='welcome-badge';badge.textContent='LOCAL DRAFT · RHEL '+draft.recipe.version;
+  const heading=document.createElement('h2');heading.textContent=draft.name;
+  const details=document.createElement('p');details.textContent=draft.recipe.rows.length+' steps · Saved '+new Date(draft.updatedAt).toLocaleString();
+  const actions=document.createElement('div');actions.className='actions';
+  const open=document.createElement('button');open.type='button';open.className='button primary';open.textContent='Open draft';open.setAttribute('aria-label','Open draft: '+draft.name);open.addEventListener('click',()=>openDraft(draft.id));
+  const remove=document.createElement('button');remove.type='button';remove.className='button';remove.textContent='Delete';remove.setAttribute('aria-label','Delete draft: '+draft.name);remove.addEventListener('click',()=>deleteDraft(draft.id));
+  actions.append(open,remove);card.append(badge,heading,details,actions);$('draft-grid').append(card);
+ }
+}
+function openDraft(id){
+ try{
+  const draft=readDrafts().find(draft=>draft.id===id);if(!draft)throw new Error('This draft no longer exists. Refresh the library.');
+  if(!confirm('Open '+draft.name+'? This replaces your working copy, not other saved drafts. Select attached local files again.'))return;
+  recipe=RecipeEngine.persisted(draft.recipe);activeDraft=draft;syncVersionButtons();$('registry').value=recipe.image;$('base-digest').value=recipe.digest;$('recipe-title').textContent=recipe.name;optionsError('');draftError('');changed();navigateView('compose');toast('Draft opened · select any referenced local files again.');
+ }catch(error){draftError('Cannot open draft: '+error.message);}
+}
+function deleteDraft(id){
+ try{
+  const draft=readDrafts().find(draft=>draft.id===id);if(!draft)throw new Error('This draft no longer exists. Refresh the library.');
+  if(!confirm('Delete '+draft.name+' from this browser? Your working copy and other drafts are kept. This cannot be undone.'))return;
+  writeDrafts(readDrafts().filter(draft=>draft.id!==id));if(activeDraft?.id===id)activeDraft=null;paintDraftStatus();renderDrafts();$('headline').focus();toast('Saved draft deleted · working copy kept.');
+ }catch(error){draftError('Cannot delete draft: '+error.message);}
+}
+function showDraftSave(copy=false){
+ draftSaveAsCopy=copy;$('draft-name').value=copy?recipe.name.slice(0,73)+' (copy)':activeDraft?.name||recipe.name;
+ $('draft-dialog-title').textContent=copy?'Save a separate copy':activeDraft?'Update your draft':'Save a draft';
+ $('draft-save-error').hidden=true;$('draft-dialog').showModal();$('draft-name').focus();$('draft-name').select();
+}
+$('save-draft').addEventListener('click',()=>showDraftSave());
+$('save-draft-copy').addEventListener('click',()=>showDraftSave(true));
+$('draft-save-cancel').addEventListener('click',()=>$('draft-dialog').close());
+$('draft-save-form').addEventListener('submit',event=>{
+ event.preventDefault();
+ try{
+  const name=$('draft-name').value.trim();if(!name)throw new Error('Enter a draft name.');
+  const candidate=RecipeEngine.persisted({...recipe,name}),drafts=readDrafts();
+  const existing=activeDraft&&!draftSaveAsCopy?drafts.find(draft=>draft.id===activeDraft.id):null;
+  if(activeDraft&&!draftSaveAsCopy&&(!existing||existing.updatedAt!==activeDraft.updatedAt))throw new Error('This draft changed or was deleted in another tab. Reopen it, or save as a copy.');
+  const draft={id:existing?.id||crypto.randomUUID(),name,updatedAt:Math.max(Date.now(),(existing?.updatedAt||0)+1),recipe:candidate};
+  writeDrafts([...drafts.filter(item=>item.id!==draft.id),draft]);
+  activeDraft=draft;recipe.name=name;$('recipe-title').textContent=name;save();draftError('');$('draft-dialog').close();toast('Draft snapshot saved in this browser · file bytes are not included.');
+ }catch(error){$('draft-save-error').textContent='Draft not saved: '+error.message;$('draft-save-error').hidden=false;}
+});
+window.addEventListener('storage',event=>{if(event.key===draftsKey&&view==='drafts')renderDrafts();});
 function toast(message){$('toast').textContent=message;$('toast').classList.remove('hidden');clearTimeout(timer);timer=setTimeout(()=>$('toast').classList.add('hidden'),2600)}
 function rowError(row){return RecipeEngine.rowError(row,recipe)}
 function imageError(){try{pipelineImageTarget(recipe.image);return '';}catch(e){return e.message;}}
@@ -457,7 +674,7 @@ $('delete-stage').addEventListener('click',()=>{const name=$('remove-stage').val
 $('export-folder').addEventListener('click',()=>{if(errors().length)return;if(!confirm('Review every file and instruction for secrets. Detection is incomplete. Export the build folder with the selected provider workflow?'))return;try{downloadArtifact(RecipeEngine.tar(RecipeEngine.buildEntries(recipe,generatePipeline(pipelineProvider,recipe.image))),'imagecraft-build.tar','application/x-tar');toast('Build folder exported · extract into a new empty folder');}catch(error){toast(error.message)}});
 $('export-recipe').addEventListener('click',()=>{if(errors().length)return;if(!confirm('Portable JSON includes local files and recipe text. Review all content for secrets; detection is incomplete. Export?'))return;try{downloadArtifact(RecipeEngine.portableExport(recipe),'imagecraft.recipe.json','application/json');toast('Portable recipe exported with local files');}catch(error){toast(error.message)}});
 $('import-recipe').addEventListener('click',()=>$('recipe-file').click());
-$('recipe-file').addEventListener('change',async()=>{optionsError('');const file=$('recipe-file').files[0];if(!file)return;try{if(file.size>30*1024*1024)throw new Error('Recipe exceeds 30 MiB.');const candidate=RecipeEngine.portableImport(await file.text());if(!confirm('Replace your recipe with imported text and files? Nothing runs here. Review every instruction before building.'))return;recipe=candidate;syncVersionButtons();$('registry').value=recipe.image;$('base-digest').value=recipe.digest;$('recipe-title').textContent=recipe.name;changed();toast('Imported locally · review before building');}catch(error){optionsError('Import rejected: '+error.message,['recipe-file']);}finally{$('recipe-file').value='';}});
+$('recipe-file').addEventListener('change',async()=>{optionsError('');const file=$('recipe-file').files[0];if(!file)return;try{if(file.size>30*1024*1024)throw new Error('Recipe exceeds 30 MiB.');const candidate=RecipeEngine.portableImport(await file.text());if(!confirm('Replace your recipe with imported text and files? Nothing runs here. Review every instruction before building.'))return;recipe=candidate;activeDraft=null;syncVersionButtons();$('registry').value=recipe.image;$('base-digest').value=recipe.digest;$('recipe-title').textContent=recipe.name;changed();toast('Imported locally · review before building');}catch(error){optionsError('Import rejected: '+error.message,['recipe-file']);}finally{$('recipe-file').value='';}});
 function paintPipeline(){
  let artifact=null,problem='';
  try{artifact=generatePipeline(pipelineProvider,recipe.image);}catch(error){problem=error.message;}
@@ -476,7 +693,11 @@ $('pipeline-copy').addEventListener('click',async()=>{if($('pipeline-copy').disa
 $('pipeline-download').addEventListener('click',()=>{if($('pipeline-download').disabled)return;const artifact=generatePipeline(pipelineProvider,recipe.image),url=URL.createObjectURL(new Blob([artifact.content],{type:'text/yaml'})),link=document.createElement('a');link.href=url;link.download=artifact.filename.split('/').pop();link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Save as '+artifact.filename)});
 function buildCommands(){if(imageError())return '# Enter a valid image reference to generate build commands.\n';const image=recipe.image.trim(),host=image.split('/')[0];return ['# Run from your reviewed, extracted build folder','podman login registry.redhat.io',`podman build -t ${image} .`,`podman login ${host}`,`podman push ${image}`,'','# Pin an immutable release reference for production'].join('\n')+'\n';}
 function paintTerminal(id,text,disabled=false){
- const output=$(id);output.replaceChildren();
+ const output=$(id);output.replaceChildren();output.dataset.shell=text.trim()+'\n';
+ const header=output.closest('.terminal').querySelector('.terminal-bar');
+ let copy=header.querySelector('[data-copy-shell],#build-copy');
+ if(!copy){copy=document.createElement('button');copy.type='button';copy.className='button';copy.textContent='Copy shell';header.append(copy);}
+ copy.dataset.copyShell=id;copy.setAttribute('aria-label','Copy shell: '+output.getAttribute('aria-label'));copy.disabled=disabled||!text.split('\n').some(line=>line.trim()&&!line.startsWith('#'));
  for(const command of text.trim().split('\n')){
   if(!command.trim())continue;
   const line=document.createElement('div');
@@ -485,15 +706,13 @@ function paintTerminal(id,text,disabled=false){
    line.className='terminal-line';
    const prompt=document.createElement('span');prompt.className='terminal-prompt';prompt.setAttribute('aria-hidden','true');prompt.textContent='$';
    const code=document.createElement('code');code.textContent=command;code.tabIndex=0;
-   const button=document.createElement('button');button.type='button';button.className='button';button.textContent='Copy';button.dataset.copyCommand=command;button.disabled=disabled;button.setAttribute('aria-label','Copy command: '+command);
-   line.append(prompt,code,button);
+   line.append(prompt,code);
   }
   output.append(line);
  }
 }
 async function copyCommandText(text){try{await navigator.clipboard.writeText(text);toast('Commands copied · nothing executed');}catch(error){toast('Clipboard unavailable. Select the command text and copy it manually.');}}
-$('view-build').addEventListener('click',event=>{const button=event.target.closest('[data-copy-command]');if(button&&!button.disabled)copyCommandText(button.dataset.copyCommand);});
-$('build-copy').addEventListener('click',()=>{if(!$('build-copy').disabled)copyCommandText([...$('build-code').querySelectorAll('code')].map(code=>code.textContent).join('\n'));});
+$('view-build').addEventListener('click',event=>{const button=event.target.closest('[data-copy-shell]');if(button&&!button.disabled)copyCommandText($(button.dataset.copyShell).dataset.shell);});
 for(const id of ['update-code','rollback-code'])paintTerminal(id,$(id).textContent);
 let artifactResult=null;
 function paintArtifacts(){
@@ -637,30 +856,32 @@ document.querySelectorAll('[data-version]').forEach(button=>button.addEventListe
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(t=>{t.classList.toggle('selected',t===b);t.setAttribute('aria-pressed',String(t===b));});paintCode()}));
 $('copy').addEventListener('click',async()=>{if(errors().length)return;try{await navigator.clipboard.writeText(tab==='container'?containerfile():buildCommands());toast('Copied to clipboard')}catch(e){toast('Clipboard unavailable. Download the Containerfile instead.')}});
 $('download').addEventListener('click',()=>{if(errors().length)return;const url=URL.createObjectURL(new Blob([containerfile()],{type:'text/plain'}));const a=document.createElement('a');a.href=url;a.download='Containerfile';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Containerfile downloaded')});
-$('reset').addEventListener('click',()=>{if(!confirm('Reset this recipe to the starter example? Your local edits will be replaced.'))return;recipe=RecipeEngine.normalize(defaults());$('base-digest').value='';syncVersionButtons();$('registry').value=recipe.image;$('recipe-title').textContent='web-server.recipe';changed();toast('Starter recipe restored')});
+$('reset').addEventListener('click',()=>{if(!confirm('Reset this recipe to the starter example? Your local edits will be replaced.'))return;recipe=RecipeEngine.normalize(defaults());activeDraft=null;$('base-digest').value='';syncVersionButtons();$('registry').value=recipe.image;$('recipe-title').textContent='web-server.recipe';changed();toast('Starter recipe restored')});
 $('clear').addEventListener('click',()=>{if(!confirm('Clear all recipe steps, builder stages and attached files? This cannot be undone. Your RHEL version, base pin, image and preferences will be kept.'))return;recipe.rows=[];recipe.stages=[];recipe.files={};optionsError('');$('stage-name').value='';$('stage-base').value='';changed();document.querySelector('[data-add]').focus();toast('Recipe cleared · settings kept')});
-const titles={templates:['Start with','possibility.','A collection of readable recipes. Choose a foundation, then shape every step.'],learn:['The image mode','field guide.','Build with the right mental model. Understand what belongs in an OS image.'],compose:['A little more','composed.','Build your operating system, one intention at a time.<br>Add steps. Arrange them. See exactly what your image becomes.'],build:['Your recipe,','ready to boot.','From OCI image to first installation. Know the prerequisites before you execute.'],pipeline:['Build once.','Ship deliberately.','Put the OS in your delivery workflow—and give production the right gates.']};
+const titles={home:['An OS image.','With a purpose.','Tell us what you are building. We will help you find the right starting point, then make it yours.'],drafts:['Your ideas.','Ready to resume.','Keep useful checkpoints. Explore variations. Pick up where you left off.'],templates:['Start with','possibility.','A collection of readable recipes. Choose a foundation, then shape every step.'],learn:['The image mode','field guide.','Build with the right mental model. Understand what belongs in an OS image.'],compose:['Your recipe.','Make it yours.','Shape the steps, save a named draft, then review and export when you are ready.'],build:['Your recipe,','ready to boot.','From OCI image to first installation. Know the prerequisites before you execute.'],pipeline:['Build once.','Ship deliberately.','Put the OS in your delivery workflow—and give production the right gates.']};
 function viewFromUrl(){
  const requested=new URLSearchParams(location.search).get('view');
- return Object.hasOwn(titles,requested)?requested:'learn';
+ return Object.hasOwn(titles,requested)?requested:'home';
 }
 function showView(nextView,focus=false){
  if(!Object.hasOwn(titles,nextView))return;
  if(view!==nextView)finishSort(false);
  view=nextView;
+ document.body.dataset.view=view;
  document.querySelectorAll('.view').forEach(el=>el.classList.toggle('hidden',el.id!=='view-'+view));
  document.querySelectorAll('.sidebar [data-view],.path [data-view]').forEach(el=>{const selected=el.dataset.view===view;el.classList.toggle('selected',selected);el.setAttribute('aria-pressed',String(selected));if(selected)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});
  document.querySelector('.projectbar').hidden=view!=='compose';
  $('warning').classList.toggle('hidden',view!=='compose'||!errors().length);
- $('chapter').textContent={learn:'01 / UNDERSTAND',compose:'02 / COMPOSE',build:'03 / BUILD & DEPLOY',pipeline:'04 / PIPELINE',templates:'STARTER LIBRARY'}[view];
+ $('chapter').textContent={home:'START WITH INTENT',drafts:'YOUR LOCAL WORKSPACE',learn:'01 / UNDERSTAND',compose:'02 / COMPOSE',build:'03 / BUILD & DEPLOY',pipeline:'04 / PIPELINE',templates:'STARTER LIBRARY'}[view];
  if(theme==='studio'){$('headline').replaceChildren(document.createTextNode(titles[view][0]+' '));const accent=document.createElement('span');accent.className='serif';accent.textContent=titles[view][1];$('headline').append(accent);$('subtitle').innerHTML=titles[view][2];}
- else{$('headline').textContent={templates:'A head start, not a black box.',learn:'A new way to ship your OS.',compose:'Your OS, composed.',build:'From definition to first boot.',pipeline:'Your OS belongs in CI, too.'}[view];$('subtitle').innerHTML=titles[view][2];}
+ else{$('headline').textContent={home:'An OS image. With a purpose.',drafts:'Your drafts. Ready to resume.',templates:'A head start, not a black box.',learn:'A new way to ship your OS.',compose:'Your recipe. Make it yours.',build:'From definition to first boot.',pipeline:'Your OS belongs in CI, too.'}[view];$('subtitle').innerHTML=titles[view][2];}
+ if(view==='drafts')renderDrafts();
  if(focus){$('headline').setAttribute('tabindex','-1');$('headline').focus();}
 }
 function navigateView(nextView){
  if(!Object.hasOwn(titles,nextView))return;
  const url=new URL(location.href);
- if(nextView==='learn'){url.pathname='/';url.searchParams.delete('view');}
+ if(nextView==='home'){url.pathname='/';url.searchParams.delete('view');}
  else url.searchParams.set('view',nextView);
  if(url.href!==location.href)history.pushState(null,'',url);
  showView(nextView,true);
@@ -678,7 +899,78 @@ const templates=[
  {id:'service-file',name:'Local service unit',recipe:'local-service.recipe',label:'LOCAL FILES',badge:'UNIT',symbol:'↗',bg:'#e9efdf',ink:'#728950',mini:'COPY / unit\nfirst boot',description:'A oneshot demonstration using a local systemd unit. RHEL 9/10 illustrative; review SELinux and first-boot behavior.',tags:['COPY','permissions','systemd'],files:{'files/imagecraft-hello.service':RecipeEngine.bytesToBase64(new TextEncoder().encode('[Unit]\nDescription=Imagecraft illustrative hello\n[Service]\nType=oneshot\nExecStart=/usr/bin/echo Hello from imagecraft\n[Install]\nWantedBy=multi-user.target\n'))},rows:[{type:'copy',value:'',source:'files/imagecraft-hello.service',destination:'/etc/systemd/system/imagecraft-hello.service',mode:'0644'},{type:'service',value:'imagecraft-hello.service'}]},
  {id:'metadata',name:'Described OS',recipe:'described-os.recipe',label:'EXPLICIT SETTINGS',badge:'META',symbol:'▱',bg:'#dfeaed',ink:'#537f8f',mini:'LABEL / purpose\nARG / option',description:'Public metadata and stage-scoped build settings. RHEL 9/10 illustrative; these fields never provide secret storage.',tags:['LABEL','ARG','ENV','WORKDIR'],rows:[{type:'label',value:'org.opencontainers.image.description=Illustrative RHEL bootc OS'},{type:'arg',value:'BUILD_FLAVOR=example'},{type:'env',value:'IMAGECRAFT_FLAVOR=example'},{type:'workdir',value:'/usr/share/imagecraft'},{type:'command',value:'printf "%s\\n" "$BUILD_FLAVOR" > flavor.txt'}]}
 ];
-function applyTemplate(id){const template=templates.find(t=>t.id===id);if(!template)return;if(!confirm('Load '+template.name+'? This replaces your current recipe rows.'))return;recipe.rows=template.rows.map(r=>({...r,id:newId()}));recipe.stages=[];recipe.files={...(template.files||{})};recipe.name=template.recipe;const host=imageError()?'quay.io':recipe.image.trim().split('/')[0];recipe.image=host+'/acme/'+template.id+':latest';$('registry').value=recipe.image;$('recipe-title').textContent=template.recipe;changed();document.querySelector('.path [data-view="compose"]').click();toast(template.name+' loaded · customize and reorder its steps');}
+function applyTemplate(id,version=recipe.version){const template=templates.find(t=>t.id===id);if(!template)return false;if(!confirm('Load '+template.name+'? This replaces your current recipe rows.'))return false;activeDraft=null;if(recipe.version!==version)recipe.digest='';recipe.version=version;syncVersionButtons();$('base-digest').value=recipe.digest;recipe.rows=template.rows.map(r=>({...r,id:newId()}));recipe.stages=[];recipe.files={...(template.files||{})};recipe.name=template.recipe;const host=imageError()?'quay.io':recipe.image.trim().split('/')[0];recipe.image=host+'/acme/'+template.id+':latest';$('registry').value=recipe.image;$('recipe-title').textContent=template.recipe;changed();navigateView('compose');toast(template.name+' loaded · customize and reorder its steps');return true;}
+const welcomeQuestions=[
+ {key:'workload',title:'What are you building?',description:'Choose the closest fit. You can change every part of the recipe later.',options:[
+  ['web','Serve a website','Apache, a sample page and a boot-time service.','Web server'],
+  ['container','Run containers','A Podman host foundation for your workloads.','Podman'],
+  ['diagnostics','Explore and troubleshoot','HTTP, JSON and network utilities.','Toolkit'],
+  ['minimal','Start with a clean base','Just RHEL and bootc. Add only what you need.','Minimal']]},
+ {key:'version',title:'Which RHEL are you building on?',description:'RHEL 10 is recommended for new images. Choose RHEL 9 when your existing environment requires it. You will need access to the release and must review package availability on your build host.',options:[
+  ['10','RHEL 10','Our recommended starting point for a new OS image.','Recommended'],
+  ['9','RHEL 9','Stay with RHEL 9 for an existing environment.','Existing environments']]},
+ {key:'target',title:'Where will it boot?',description:'We will carry this choice into the disk command wizard. Building and installation happen outside your browser.',options:[
+  ['qcow2','A virtual machine','QCOW2 disk commands for a Linux VM.','QCOW2'],
+  ['vmdk','VMware vSphere','VMDK disk commands and import guidance.','VMDK'],
+  ['raw','A physical host','Raw disk commands; installation is a separate step.','Raw disk'],
+  ['oci','Decide later','Compose and publish an OCI image first.','OCI image']]}
+];
+const welcomeIcons={
+ web:'M3 4h18v16H3Z M3 9h18 M6 6.5h.01 M9 6.5h.01 M10 12l-3 2.5 3 2.5 M14 12l3 2.5-3 2.5',
+ container:'M3 6h18v12H3Z M3 10h18 M7 10v8 M12 10v8 M17 10v8 M7 6V3h10v3',
+ diagnostics:'M3 4h18v16H3Z M6 9l3 3-3 3 M12 15h6',
+ minimal:'M12 3l9 5-9 5-9-5Z M3 12l9 5 9-5 M3 16l9 5 9-5',
+ qcow2:'M3 3h18v13H3Z M8 21h8 M12 16v5 M7 7h10v5H7Z',
+ vmdk:'M3 3h12v12H3Z M9 9h12v12H9Z',
+ raw:'M4 3h16v18H4Z M4 9h16 M4 15h16 M7 6h.01 M7 12h.01 M7 18h.01 M11 6h6 M11 12h6 M11 18h6',
+ oci:'M12 3l9 5v9l-9 5-9-5V8Z M3 8l9 5 9-5 M12 13v9 M7.5 5.5l9 5'
+};
+let welcomeIndex=0;
+const welcomeAnswers={};
+function renderWelcome(focus=false){
+ const result=welcomeIndex===welcomeQuestions.length;
+ $('welcome-progress').replaceChildren(...welcomeQuestions.map((question,index)=>{const segment=document.createElement('span');segment.classList.toggle('complete',index<=welcomeIndex);return segment;}));
+ $('welcome-step').textContent=result?'YOUR STARTING POINT':`QUESTION ${welcomeIndex+1} OF ${welcomeQuestions.length}`;
+ $('welcome-choices').replaceChildren();$('welcome-choices').hidden=result;$('welcome-result').hidden=!result;
+ $('welcome-back').hidden=welcomeIndex===0;$('welcome-next').textContent=result?'Create my recipe →':'Continue →';
+ if(result){
+  const starter=templates.find(template=>template.id===welcomeAnswers.workload);
+  $('welcome-question').textContent=starter.name+'. Made yours.';
+  $('welcome-description').textContent='A small, readable foundation matched to your answers. Next, customize it in Compose.';
+  $('welcome-summary').replaceChildren();
+  for(const [label,value] of [['Starter',starter.name],['Base','RHEL '+welcomeAnswers.version],['Destination',welcomeQuestions[2].options.find(option=>option[0]===welcomeAnswers.target)[1]]]){
+   const term=document.createElement('dt'),detail=document.createElement('dd');term.textContent=label;detail.textContent=value;$('welcome-summary').append(term,detail);
+  }
+ }else{
+  const question=welcomeQuestions[welcomeIndex];$('welcome-question').textContent=question.title;$('welcome-description').textContent=question.description;
+  for(const [value,title,description,badgeText] of question.options){
+   const label=document.createElement('label');label.className='welcome-option';
+   const recommended=question.key==='version'&&value==='10';label.classList.toggle('recommended',recommended);
+   const visual=document.createElement('span');visual.className='welcome-visual';visual.setAttribute('aria-hidden','true');
+   if(question.key==='version')visual.textContent=value;
+   else{
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',welcomeIcons[value]);svg.append(path);visual.append(svg);
+   }
+   const radio=document.createElement('input');radio.type='radio';radio.name=question.key;radio.value=value;radio.required=true;radio.checked=welcomeAnswers[question.key]===value;radio.setAttribute('aria-label',title);
+   const badge=document.createElement('span');badge.className='welcome-badge';badge.id='welcome-badge-'+value;badge.textContent=badgeText;
+   const text=document.createElement('span'),heading=document.createElement('strong'),detail=document.createElement('small');text.className='welcome-option-copy';detail.id='welcome-detail-'+value;heading.textContent=title;detail.textContent=description;
+   radio.setAttribute('aria-describedby',badge.id+' '+detail.id);
+   radio.addEventListener('change',()=>{welcomeAnswers[question.key]=value;});
+   text.append(badge,heading,detail);label.append(visual,radio,text);$('welcome-choices').append(label);
+  }
+ }
+ if(focus)$('welcome-question').focus();
+}
+$('welcome-back').addEventListener('click',()=>{welcomeIndex--;renderWelcome(true);});
+$('welcome-form').addEventListener('submit',event=>{
+ event.preventDefault();
+ if(welcomeIndex<welcomeQuestions.length){welcomeIndex++;renderWelcome(true);return;}
+ if(applyTemplate(welcomeAnswers.workload,welcomeAnswers.version)&&welcomeAnswers.target!=='oci'){
+  $('artifact-format').value=welcomeAnswers.target;showBuildStep('install');paintArtifacts();
+ }
+});
+renderWelcome();
 function renderTemplates(){templates.forEach(t=>{const card=document.createElement('article');card.className='template-card';const art=document.createElement('div');art.className='template-art';art.setAttribute('aria-hidden','true');art.style.setProperty('--art-bg',t.bg);art.style.setProperty('--art-ink',t.ink);const label=document.createElement('span');label.className='art-label';label.textContent=t.label;const badge=document.createElement('div');badge.className='preview-badge';const symbol=document.createElement('span');symbol.textContent=t.symbol;const title=document.createElement('b');title.textContent=t.badge;badge.append(symbol,title);const mini=document.createElement('div');mini.className='preview-mini';mini.style.whiteSpace='pre-line';mini.textContent=t.mini;const version=document.createElement('span');version.className='art-version';version.textContent='BOOTABLE OS / OCI';art.append(label,badge,mini,version);const copy=document.createElement('div');copy.className='template-copy';const heading=document.createElement('div');heading.className='template-heading';const h=document.createElement('h3');h.textContent=t.name;const level=document.createElement('span');level.className='template-level';level.textContent='STARTER';heading.append(h,level);const p=document.createElement('p');p.textContent=t.description;const tags=document.createElement('div');tags.className='template-tags';t.tags.forEach(tag=>{const span=document.createElement('span');span.textContent=tag;tags.append(span)});const bottom=document.createElement('div');bottom.className='template-bottom';const count=document.createElement('small');count.textContent=t.rows.length+' editable steps';const use=document.createElement('button');use.className='button primary';use.dataset.template=t.id;use.textContent='Use template →';use.setAttribute('aria-label','Use template: '+t.name);use.addEventListener('click',()=>applyTemplate(t.id));bottom.append(count,use);copy.append(heading,p,tags,bottom);card.append(art,copy);$('template-grid').append(card)})}
 $('recipe-title').textContent=typeof recipe.name==='string'?recipe.name:'web-server.recipe';
 $('base-digest').value=recipe.digest;renderTemplates();renderRows();paintCode();save();

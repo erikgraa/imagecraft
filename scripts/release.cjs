@@ -27,6 +27,8 @@ function releaseDetails(tag, changelog) {
 
 if (require.main === module) {
   const details = releaseDetails(process.argv[2] || '', fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.md'), 'utf8'));
+  const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+  if (details.version !== version) throw new Error('Release tag must match the version in package.json');
   fs.writeFileSync(path.join(__dirname, '..', 'release-notes.md'), details.notes);
   if (process.env.GITHUB_OUTPUT) {
     fs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${details.version}\nprerelease=${details.prerelease}\n`);

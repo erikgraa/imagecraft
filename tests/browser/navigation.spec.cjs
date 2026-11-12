@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 
-const views = ['learn', 'compose', 'build', 'pipeline', 'templates'];
+const views = ['drafts', 'learn', 'compose', 'build', 'pipeline', 'templates'];
 
 async function visibleView(page, view) {
   await expect(page.locator(`#view-${view}`)).toBeVisible();
@@ -10,6 +10,9 @@ async function visibleView(page, view) {
 }
 
 async function navigate(page, view) {
+  if (await page.locator('#view-home').isVisible()) {
+    await page.getByRole('link', { name: 'Go straight to Compose' }).click();
+  }
   const controls = page.locator(`.sidebar [data-view="${view}"],.path [data-view="${view}"]`);
   for (const control of await controls.all()) {
     if (await control.isVisible()) { await control.click(); return; }
@@ -25,13 +28,13 @@ test.beforeEach(async ({ page }, testInfo) => {
   await page.addInitScript(mode => localStorage.setItem('imagecraft-color-mode', mode), testInfo.project.name.endsWith('dark') ? 'dark' : 'light');
 });
 
-test('Understand is the accessible homepage with direct composing and pipeline links', async ({ page }, testInfo) => {
+test('intent-first homepage is accessible with direct editor and guide links', async ({ page }, testInfo) => {
   await page.goto('/');
-  await visibleView(page, 'learn');
-  await expect(page.locator('#chapter')).toHaveText('01 / UNDERSTAND');
-  await expect(page.locator('#headline')).toHaveText('A new way to ship your OS.');
-  await expect(page.getByRole('link', { name: 'Start composing' })).toHaveAttribute('href', '?view=compose');
-  await expect(page.locator('.landing-actions [data-view="pipeline"]')).toHaveAttribute('href', '?view=pipeline');
+  await visibleView(page, 'home');
+  await expect(page.locator('#chapter')).toHaveText('START WITH INTENT');
+  await expect(page.locator('#headline')).toHaveText('An OS image. With a purpose.');
+  await expect(page.getByRole('link', { name: 'Go straight to Compose' })).toHaveAttribute('href', '?view=compose');
+  await expect(page.getByRole('link', { name: 'Read the field guide' })).toHaveAttribute('href', '?view=learn');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to current section' })).toBeFocused();
   await page.keyboard.press('Enter');
@@ -39,7 +42,7 @@ test('Understand is the accessible homepage with direct composing and pipeline l
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: testInfo.outputPath('understand-homepage.png'), fullPage: true });
-  await page.getByRole('link', { name: 'Start composing' }).click();
+  await page.getByRole('link', { name: 'Go straight to Compose' }).click();
   await visibleView(page, 'compose');
   await expect(page).toHaveURL(/\?view=compose/);
   await expect(page.locator('#headline')).toBeFocused();
@@ -51,23 +54,23 @@ test('every direct-link reload supports logo mouse and real keyboard home naviga
     await page.reload();
     await visibleView(page, view);
     await page.locator('.brand .mark').click();
-    await visibleView(page, 'learn');
+    await visibleView(page, 'home');
     await expect(page).toHaveURL(/\/$/);
     await expect(page.locator('#headline')).toBeFocused();
     await page.goto('/?view=' + view);
     await page.keyboard.press('Tab');
     await page.keyboard.press('Tab');
-    await expect(page.getByRole('link', { name: 'Imagecraft home — Understand', exact: true })).toBeFocused();
+    await expect(page.getByRole('link', { name: 'Imagecraft home', exact: true })).toBeFocused();
     expect(await page.locator('.brand').evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid');
     await page.keyboard.press('Enter');
-    await visibleView(page, 'learn');
+    await visibleView(page, 'home');
     await expect(page).toHaveURL(/\/$/);
   }
   await page.goto('/index.html?view=build');
   await page.locator('.brand').click();
   await expect(page).toHaveURL(/\/$/);
   await page.goto('/?view=unknown');
-  await visibleView(page, 'learn');
+  await visibleView(page, 'home');
 });
 
 test('history and home preserve edited recipe and preferences across reloads', async ({ page }) => {
@@ -79,7 +82,7 @@ test('history and home preserve edited recipe and preferences across reloads', a
   await page.locator('[data-provider="gitlab"]').click();
   const before = await savedState(page);
   await page.locator('.brand').click();
-  await visibleView(page, 'learn');
+  await visibleView(page, 'home');
   await page.goBack();
   await visibleView(page, 'pipeline');
   await page.goBack();
@@ -112,7 +115,7 @@ test('home and every view preserve local file bytes, stage settings and base pin
   for (const view of views) {
     await navigate(page, view);
     await page.locator('.brand').click();
-    await visibleView(page, 'learn');
+    await visibleView(page, 'home');
     expect(await page.evaluate(() => JSON.stringify(recipe))).toBe(before);
   }
   await navigate(page, 'compose');

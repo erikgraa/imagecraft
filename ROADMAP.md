@@ -1,17 +1,22 @@
 # Roadmap
 
-Imagecraft is an independent prototype. These ideas are directions to explore, not delivery promises.
+Imagecraft is an independent recipe workbench. Version **0.5.0** is its first numbered release; generated RHEL images remain illustrative and unvalidated. These ideas are directions to explore, not delivery promises.
 
 ## Available now
 
 - [x] Guided RHEL 9/10 recipe composition and starter library.
+- [x] Illustrated intent-first welcome questions with an explicit RHEL 10 recommendation.
+- [x] Named browser-local drafts, independent working-copy autosave and explicit save/copy/open/delete actions.
 - [x] Ordered package, command, and service steps with accessible sorting.
 - [x] Containerfile, build-command, and GitHub/GitLab/Azure workflow downloads.
-- [x] Browser-local preferences, light/dark themes, and responsive layouts.
+- [x] System-default theme with saved light/dark overrides, readable red accents and a centered responsive workspace.
+- [x] Illustrated navigation, prominent safety warnings and focused Build / Install / Maintain tasks.
+- [x] One whole-shell copy control per terminal, preserving caution comments and separating hosts/tasks.
 - [x] Public website and self-hosted container infrastructure.
 - [x] Linux amd64 and arm64 Imagecraft images, with native HTTP checks and verified multi-platform publication.
 - [x] Automated checks and changelog-based release tooling.
 - [x] Ordered local-file `COPY` with source/destination checks and explicit permissions.
+- [x] Local-file/archive and HTTPS-file `ADD`, with source-specific checks and no browser fetching or extraction.
 - [x] Complete build-folder TAR downloads with Containerfile, referenced files, ignore rules, and the selected provider workflow.
 - [x] Versioned portable recipe import/export with embedded files. Files stay in memory; browser saves omit file bytes and require reselection after reload.
 - [x] `LABEL`, `ARG`, `ENV`, and `WORKDIR` steps, with validation and per-stage ordering.
@@ -20,6 +25,8 @@ Imagecraft is an independent prototype. These ideas are directions to explore, n
 - [x] Six illustrative starter recipes with compatibility notes.
 - [x] Optional local review hints for recipe mistakes; these do not check package availability or execute builds.
 - [x] Expanded guidance on credentials, file permissions, persistent state, SELinux, builder compatibility, protected runners, and safe updates/rollback.
+- [x] QCOW2/raw/vSphere VMDK command/config wizard, plus separate OCI, disk-signature and bootc trust guidance.
+- [x] Versioned workbench releases, a footer version link, README badges and current screenshots.
 - [x] Repeatable Chromium/axe accessibility and interaction checks across desktop/mobile and light/dark themes, with improved keyboard focus and associated validation errors.
 
 ## Next to explore
@@ -27,11 +34,11 @@ Imagecraft is an independent prototype. These ideas are directions to explore, n
 - [ ] Validate starter recipes with real RHEL builds and boot tests.
 - [ ] Test generated workflows on each supported provider with entitled runners.
 - [ ] Manual screen-reader testing and real user feedback; automated checks are not a substitute.
-- [ ] Publish the first numbered release after real-world validation.
+- [ ] Choose and document a license before promising reuse rights.
 
 ## Later possibilities
 
 - [ ] Package-availability checks backed by appropriate RHEL access and version-specific evidence.
 - [ ] Broader builder architecture/ABI, SELinux, persistent-state, update, and rollback validation with real build/boot environments.
 
-Imagecraft does not execute recipes or hold build credentials. Any future integration needs a separate design and review. Preserve bootc startup and user defaults: application-container features such as `CMD`, `ENTRYPOINT`, `USER`, and `EXPOSE` are not a priority for this OS-image editor. Prefer `COPY` over the implicit download/extraction behavior of `ADD` for the initial file workflow.
+Imagecraft does not execute recipes or hold build credentials. Any future integration needs a separate design and review. Preserve bootc startup and user defaults: application-container features such as `CMD`, `ENTRYPOINT`, `USER`, and `EXPOSE` are not a priority for this OS-image editor. Prefer `COPY` for straightforward local copying; review `ADD` provenance and extraction behavior on your build host.

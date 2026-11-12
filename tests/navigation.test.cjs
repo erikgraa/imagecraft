@@ -6,7 +6,7 @@ const vm = require('node:vm');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8');
 const source = html.slice(html.indexOf('const titles='), html.indexOf('const templates='));
-const views = ['learn', 'compose', 'build', 'pipeline', 'templates'];
+const views = ['home', 'drafts', 'learn', 'compose', 'build', 'pipeline', 'templates'];
 
 function element(id, view, tagName = 'BUTTON') {
   const classes = new Set();
@@ -26,7 +26,7 @@ function element(id, view, tagName = 'BUTTON') {
 function app(url = 'https://imagecraft.test/') {
   const sections = views.map(view => element('view-' + view, view));
   const navigation = views.map(view => element('', view));
-  const home = element('', 'learn', 'A');
+  const home = element('', 'home', 'A');
   const compose = element('', 'compose', 'A');
   const controls = [...navigation, home, compose];
   const headings = Object.fromEntries(['chapter', 'headline', 'subtitle', 'warning'].map(id => [id, element(id)]));
@@ -49,8 +49,9 @@ function app(url = 'https://imagecraft.test/') {
     pipelineProvider: 'gitlab', tab: 'build',
     finishSort(commit) { assert.equal(commit, false); },
     errors: () => [],
+    renderDrafts() {},
     $: id => headings[id],
-    document: { querySelector(selector) {
+    document: { body: { dataset: {} }, querySelector(selector) {
       assert.equal(selector, '.projectbar');
       return projectbar;
     }, querySelectorAll(selector) {
@@ -75,7 +76,7 @@ function app(url = 'https://imagecraft.test/') {
   };
 }
 
-for (const [query, expected] of [['', 'learn'], ['?view=learn', 'learn'], ['?view=unknown', 'learn'], ['?view=toString', 'learn'], ...views.map(view => ['?view=' + view, view])]) {
+for (const [query, expected] of [['', 'home'], ['?view=unknown', 'home'], ['?view=toString', 'home'], ...views.map(view => ['?view=' + view, view])]) {
   test(`initial load ${query || '/'} displays ${expected} without adding history`, () => {
     const state = app('https://imagecraft.test/' + query);
     assert.equal(state.context.view, expected);
@@ -98,7 +99,7 @@ test('navigation, home, Back and Forward preserve recipe and preferences', () =>
   assert.equal(state.entries.length, 2, 'same route does not duplicate history');
   state.click(state.navigation.find(control => control.dataset.view === 'pipeline'));
   state.click(state.home);
-  assert.equal(state.context.view, 'learn');
+  assert.equal(state.context.view, 'home');
   assert.equal(new URL(state.entries.at(-1)).searchParams.has('view'), false);
   assert.equal(state.headings.headline.focused, true);
   state.back();
@@ -127,7 +128,7 @@ test('modified link clicks retain native new-tab/window behavior', () => {
 });
 
 test('landing and brand expose real, keyboard-accessible links', () => {
-  assert.match(html, /<a class="brand" href="\/" data-view="learn" aria-label="Imagecraft home — Understand">/);
+  assert.match(html, /<a class="brand" href="\/" data-view="home" aria-label="Imagecraft home">/);
   assert.match(html, /<a class="button primary" href="\?view=compose" data-view="compose">Start composing →<\/a>/);
   assert.match(html, /<a href="\?view=pipeline" data-view="pipeline">Pipeline →<\/a>/);
   assert.match(html, /showView\(viewFromUrl\(\)\);\s*<\/script>/);

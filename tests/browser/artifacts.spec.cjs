@@ -1,6 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 const fs = require('node:fs/promises');
+const InstallationGenerator = require('../../public/installation-generator.js');
 const key = 'ssh-ed25519 ' + Buffer.concat([Buffer.from([0, 0, 0, 11]), Buffer.from('ssh-ed25519'), Buffer.from([0, 0, 0, 32]), Buffer.alloc(32, 1)]).toString('base64') + ' test@example';
 
 test.beforeEach(async ({ page }, info) => {
@@ -12,11 +13,16 @@ async function clipboard(page) {
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async text => window.copies.push(text) } });
   });
 }
-async function openDetails(page, id) { await page.locator(id).evaluate(el => el.closest('details').open = true); }
+async function step(page, name) { await page.locator('.build-steps [data-build-step="' + name + '"]').click(); }
+async function openDetails(page, id) {
+  await step(page, await page.locator(id).evaluate(el => el.closest('[data-build-panel]').dataset.buildPanel));
+  await page.locator(id).evaluate(el => { for (let parent = el.parentElement; parent; parent = parent.parentElement) if (parent.tagName === 'DETAILS') parent.open = true; });
+}
 
 test('artifact formats, public-key config, downloads and command copies are generation only', async ({ page }) => {
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await page.goto('/?view=build');
+  await step(page, 'install');
   await clipboard(page);
   await expect(page.locator('#artifact-target')).toContainText('Replace the public-key placeholder');
   await page.locator('#artifact-key').fill(key);
@@ -24,20 +30,25 @@ test('artifact formats, public-key config, downloads and command copies are gene
   const digest = 'quay.io/example/test-os@sha256:' + 'a'.repeat(64);
   await page.locator('#artifact-image').fill(digest);
   for (const [format, path] of [['qcow2', 'qcow2/disk.qcow2'], ['raw', 'image/disk.raw'], ['vmdk', 'vmdk/disk.vmdk']]) {
+    const generated = InstallationGenerator.generate({ version: '10', image: digest, format, arch: 'x86_64', user: 'admin', key });
+    await step(page, 'install');
     await page.locator('#artifact-format').selectOption(format);
     await expect(page.locator('#artifact-target')).toContainText('output/' + path);
     await expect(page.locator('#artifact-code')).toContainText('--type ' + format);
     await expect(page.locator('#artifact-code')).toContainText(digest);
+    await page.locator('[data-copy-shell="artifact-code"]').click();
+    expect((await page.evaluate(() => window.copies)).at(-1)).toBe(generated.commands.trim() + '\n');
     await openDetails(page, '#sign-disk-code');
     await expect(page.locator('#sign-disk-code')).toContainText(`cosign verify-blob --key /trusted/path/cosign.pub --bundle disk.sigstore.json 'output/${path}'`);
-    await page.locator('#sign-disk-code button').nth(1).click();
-    expect((await page.evaluate(() => window.copies)).at(-1)).toContain('cosign verify-blob');
+    await page.locator('[data-copy-shell="sign-disk-code"]').click();
+    expect((await page.evaluate(() => window.copies)).at(-1)).toBe(generated.signing.disk.trim() + '\n');
   }
+  await step(page, 'install');
   await expect(page.locator('#artifact-vsphere')).toBeVisible();
   await page.locator('#artifact-vsphere summary').click();
   const command = await page.locator('#artifact-import-code code').textContent();
-  await page.locator('#artifact-import-code button').click();
-  expect((await page.evaluate(() => window.copies)).at(-1)).toBe(command);
+  await page.locator('[data-copy-shell="artifact-import-code"]').click();
+  expect((await page.evaluate(() => window.copies)).at(-1)).toBe(command + '\n');
   await openDetails(page, '#artifact-config');
   await page.locator('#artifact-config-copy').click();
   const config = await page.locator('#artifact-config').textContent();
@@ -59,14 +70,18 @@ test('artifact formats, public-key config, downloads and command copies are gene
 
 test('wizard rejects incompatible architecture and secrets without disabling installed-host actions', async ({ page }) => {
   await page.goto('/?view=build');
+  await step(page, 'install');
   await page.locator('#artifact-format').selectOption('vmdk');
   await page.locator('#artifact-arch').selectOption('aarch64');
   await expect(page.locator('#artifact-error')).toContainText('requires x86_64');
   await expect(page.locator('#artifact-download')).toBeDisabled();
   await expect(page.locator('#artifact-config-copy')).toBeDisabled();
   await expect(page.locator('#artifact-code button')).toHaveCount(0);
-  await expect(page.locator('#update-code button').first()).toBeEnabled();
-  await expect(page.locator('#rollback-code button').first()).toBeEnabled();
+  for (const id of ['artifact-code', 'artifact-import-code', 'switch-code', 'sign-image-code', 'sign-disk-code']) {
+    await expect(page.locator('[data-copy-shell="' + id + '"]')).toBeDisabled();
+  }
+  await expect(page.locator('[data-copy-shell="update-code"]')).toBeEnabled();
+  await expect(page.locator('[data-copy-shell="rollback-code"]')).toBeEnabled();
   await page.locator('#artifact-format').selectOption('raw');
   await expect(page.locator('#artifact-download')).toBeEnabled();
   await expect(page.locator('#artifact-code')).toContainText('test "$(uname -m)" = aarch64');
@@ -80,21 +95,27 @@ test('wizard rejects incompatible architecture and secrets without disabling ins
   }
 });
 
-test('lifecycle and signing disclosures remain keyboard accessible with exact independent copies', async ({ page }) => {
+test('lifecycle and signing disclosures remain keyboard accessible with exact independent shell copies', async ({ page }) => {
   await page.goto('/?view=build');
   await clipboard(page);
+  await step(page, 'maintain');
+  await page.locator('#release-verification > summary').focus();
+  await page.keyboard.press('Enter');
   await expect(page.getByRole('note', { name: 'Warning: three different trust boundaries' })).toBeVisible();
   await expect(page.locator('#view-build')).toContainText('does not change the running OS');
   await expect(page.locator('#view-build')).toContainText('Coordinate automatic update agents');
   for (const id of ['#switch-code', '#sign-image-code', '#sign-disk-code', '#artifact-config']) {
-    const summary = page.locator(id).locator('xpath=ancestor::details').locator('summary').first();
+    await step(page, id === '#artifact-config' ? 'install' : 'maintain');
+    const summary = page.locator(id).locator('xpath=ancestor::details[1]/summary');
     await summary.focus(); await page.keyboard.press('Enter');
     await expect(page.locator(id)).toBeVisible();
   }
-  await page.locator('#switch-code button').nth(1).click();
-  expect((await page.evaluate(() => window.copies)).at(-1)).toMatch(/^sudo bootc switch 'quay.io\/acme\/web-server@sha256:REPLACE_WITH_VERIFIED_DIGEST'$/);
-  await page.locator('#sign-image-code button').nth(1).click();
-  expect((await page.evaluate(() => window.copies)).at(-1)).toMatch(/^cosign verify --key /);
+  await step(page, 'maintain');
+  await page.locator('[data-copy-shell="switch-code"]').click();
+  expect((await page.evaluate(() => window.copies)).at(-1)).toBe("sudo bootc status\nsudo bootc switch 'quay.io/acme/web-server@sha256:REPLACE_WITH_VERIFIED_DIGEST'\nsudo bootc status\n# Reboot only after target/trust review, in a maintenance window:\nsudo systemctl reboot\n# After reconnecting:\nsudo bootc status\n");
+  await page.locator('[data-copy-shell="sign-image-code"]').click();
+  const generated = InstallationGenerator.generate({ version: '10', image: 'quay.io/acme/web-server:latest', format: 'qcow2', arch: 'x86_64', user: 'admin', key: '' });
+  expect((await page.evaluate(() => window.copies)).at(-1)).toBe(generated.signing.image.trim() + '\n');
   await expect(page.locator('#view-build')).toContainText('it does not configure bootc pull enforcement');
   await page.getByText('bootc enforcement · configure and test host trust separately', { exact: true }).click();
   await expect(page.locator('#view-build')).toContainText('unsigned, wrong-key and wrong-repository');
@@ -108,6 +129,7 @@ test('wizard follows recipe version/destination without changing recipe, pins or
   await page.locator('[data-version="9"]').click();
   const before = await page.evaluate(() => localStorage.getItem('imagecraft-ordered-recipe-v1'));
   await page.getByRole('button', { name: 'Build & deploy', exact: true }).click();
+  await step(page, 'install');
   await expect(page.locator('#artifact-code')).toContainText('rhel9/bootc-image-builder:latest');
   await expect(page.locator('#artifact-target')).toContainText('quay.io/example/new-os:v2');
   await page.locator('#artifact-key').fill(key);
@@ -118,6 +140,7 @@ test('wizard follows recipe version/destination without changing recipe, pins or
   expect(await page.evaluate(() => localStorage.getItem('imagecraft-ordered-recipe-v1'))).toBe(before);
   expect(await page.evaluate(() => Object.values(localStorage).join(' '))).not.toContain(key);
   await page.goto('/?view=build');
+  await step(page, 'install');
   await expect(page.locator('#artifact-key')).toHaveValue('');
   await expect(page.locator('#artifact-image')).toHaveValue('');
   await expect(page.locator('#artifact-user')).toHaveValue('admin');
