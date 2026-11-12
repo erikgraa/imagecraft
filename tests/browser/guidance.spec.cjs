@@ -31,7 +31,7 @@ test('terminal copies whole current shells with caution comments, without prompt
     'podman push quay.io/example/reviewed-os:v2',
   ]);
   const buildShell = '# Run from your reviewed, extracted build folder\n' + commands.join('\n') + '\n\n# Pin an immutable release reference for production\n';
-  await page.locator('#build-copy').click();
+  await page.locator('#build-copy').filter({ hasText: /^Copy$/ }).click();
   expect(await page.evaluate(() => window.copiedCommands)).toEqual([buildShell]);
   await expect(build.getByRole('button')).toHaveCount(0);
   await expect(page.locator('#build-publish [data-copy-shell]')).toHaveCount(1);
@@ -46,7 +46,7 @@ test('terminal copies whole current shells with caution comments, without prompt
   await page.keyboard.press('Enter');
   await page.locator('.build-steps [data-build-step="maintain"]').click();
   await expect(page.getByRole('note', { name: 'Warning: review before rebooting' })).toBeVisible();
-  await page.locator('[data-copy-shell="update-code"]').click();
+  await page.locator('[data-copy-shell="update-code"]').filter({ hasText: /^Copy$/ }).click();
   await page.getByText('Roll back if needed', { exact: true }).click();
   await page.locator('[data-copy-shell="rollback-code"]').click();
   const afterReboot = '# After reconnecting, inspect the booted deployment and service health:\nsudo bootc status\n';
@@ -76,7 +76,7 @@ test('clipboard failures give manual fallback and invalid recipes disable build 
   await page.locator('#build-copy').click();
   await expect(page.locator('#toast')).toContainText('copy it manually');
   await page.goto('/?view=compose');
-  await page.getByRole('textbox', { name: 'packages value for step 1', exact: true }).fill('');
+  await page.getByRole('textbox', { name: 'Package names for step 1', exact: true }).fill('');
   await page.goto('/?view=build');
   await expect(page.locator('#build-copy')).toBeDisabled();
   await expect(page.locator('#build-error')).toHaveText('Fix recipe errors in Compose before copying build commands.');
@@ -148,5 +148,34 @@ test('build steps show one task at a time, preserve wizard inputs, and disclose 
   expect(await page.evaluate(() => JSON.stringify(localStorage))).toBe(before);
   await page.getByRole('button', { name: 'Next: Maintain', exact: true }).click();
   await expect(page.locator('.build-steps [data-build-step="maintain"]')).toBeFocused();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test('lifecycle loops from an installed-host update to the next recipe without repeating disk installation', async ({ page }) => {
+  await page.goto('/?view=compose');
+  const cycle = page.getByRole('navigation', { name: 'OS image lifecycle', exact: true });
+  await expect(cycle.locator('[aria-current="step"]')).toHaveAttribute('data-lifecycle', 'compose');
+  const before = await page.evaluate(() => JSON.stringify(recipe));
+  for (const step of ['build', 'publish', 'boot', 'update', 'compose']) {
+    await cycle.locator(`[data-lifecycle="${step}"]`).focus();
+    await page.keyboard.press('Enter');
+    await expect(cycle.locator('[aria-current="step"]')).toHaveAttribute('data-lifecycle', step);
+    if (step === 'boot') {
+      await expect(page.locator('#build-install')).toBeVisible();
+      await page.locator('#artifact-user').fill('operator');
+    } else if (step === 'update') {
+      await expect(page.locator('#update-code')).toBeVisible();
+      await expect(page.locator('#build-install')).toBeHidden();
+    } else if (step === 'compose') {
+      await expect(page.locator('#view-compose')).toBeVisible();
+    } else {
+      await expect(page.locator('#build-publish')).toBeVisible();
+      await expect(page.locator('#build-code')).toContainText('podman build');
+      await expect(page.locator('#build-code')).toContainText('podman push');
+    }
+  }
+  await cycle.locator('[data-lifecycle="boot"]').click();
+  await expect(page.locator('#artifact-user')).toHaveValue('operator');
+  expect(await page.evaluate(() => JSON.stringify(recipe))).toBe(before);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

@@ -11,7 +11,32 @@ async function answer(page, name) {
   await page.getByRole('button', { name: 'Continue', exact: false }).click();
 }
 
-test('illustrated answers make the RHEL 10 recommendation explicit without choosing for the user', async ({ page }) => {
+for (const review of [false, true]) {
+  test(`reset from ${review ? 'starting-point review' : 'question 3'} clears answers without changing the working copy`, async ({ page }) => {
+    const before = await page.evaluate(() => ({ recipe: JSON.stringify(recipe), storage: JSON.stringify(localStorage) }));
+    await expect(page.getByRole('button', { name: 'Reset', exact: true })).toBeHidden();
+    await answer(page, 'Run containers');
+    await answer(page, 'RHEL 9');
+    if (review) await answer(page, 'VMware vSphere');
+    const reset = page.getByRole('button', { name: 'Reset', exact: true });
+    await expect(reset.locator('svg')).toHaveAttribute('aria-hidden', 'true');
+    await reset.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#welcome-step')).toHaveText('QUESTION 1 OF 3');
+    await expect(page.locator('#welcome-question')).toBeFocused();
+    await expect(page.locator('#welcome-choices input:checked')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Continue' }).click();
+    await expect(page.locator('#welcome-step')).toHaveText('QUESTION 1 OF 3');
+    await answer(page, 'Serve a website');
+    await expect(page.getByRole('radio', { name: 'RHEL 10', exact: true })).toBeChecked();
+    await answer(page, 'RHEL 10');
+    await expect(page.locator('#welcome-choices input:checked')).toHaveCount(0);
+    expect(await page.evaluate(() => ({ recipe: JSON.stringify(recipe), storage: JSON.stringify(localStorage) }))).toEqual(before);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  });
+}
+
+test('illustrated answers preselect RHEL 10 while allowing an explicit RHEL 9 choice', async ({ page }) => {
   await expect(page.locator('.welcome-visual svg')).toHaveCount(4);
   await expect(page.locator('.welcome-badge')).toHaveText(['Web server', 'Podman', 'Toolkit', 'Minimal']);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
@@ -22,17 +47,18 @@ test('illustrated answers make the RHEL 10 recommendation explicit without choos
   await expect(recommended.locator('.welcome-visual')).toHaveText('10');
   await expect(recommended.getByRole('radio')).toHaveAccessibleName('RHEL 10');
   await expect(recommended.getByRole('radio')).toHaveAccessibleDescription(/Recommended/);
-  await expect(recommended.getByRole('radio')).not.toBeChecked();
+  await expect(recommended.getByRole('radio')).toBeChecked();
   await page.getByRole('button', { name: 'Continue' }).click();
-  await expect(page.locator('#welcome-step')).toHaveText('QUESTION 2 OF 3');
+  await expect(page.locator('#welcome-step')).toHaveText('QUESTION 3 OF 3');
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
-  await answer(page, 'RHEL 10');
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await answer(page, 'RHEL 9');
   await expect(page.locator('.welcome-visual svg')).toHaveCount(4);
   await expect(page.locator('.welcome-badge')).toHaveText(['QCOW2', 'VMDK', 'Raw disk', 'OCI image']);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await page.getByRole('button', { name: 'Back', exact: true }).click();
-  await expect(recommended.getByRole('radio')).toBeChecked();
+  await expect(page.getByRole('radio', { name: 'RHEL 9', exact: true })).toBeChecked();
 });
 
 test('questions require a choice, preserve answers on Back and do not mutate the recipe', async ({ page }) => {
@@ -62,6 +88,8 @@ test('questions require a choice, preserve answers on Back and do not mutate the
   await expect(page.locator('#recipe-title')).toHaveText('container-host.recipe');
   await expect(page.locator('[data-version="9"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#code')).toContainText('RUN dnf install -y podman');
+  await expect(page.locator('#code')).toContainText('RUN dnf install -y open-vm-tools');
+  await expect(page.locator('#code')).toContainText('RUN systemctl enable vmtoolsd');
   await expect(page.locator('#download')).toBeEnabled();
   await page.evaluate(() => navigateView('build'));
   await expect(page.locator('#artifact-format')).toHaveValue('vmdk');
@@ -70,6 +98,7 @@ test('questions require a choice, preserve answers on Back and do not mutate the
 
 test('welcome preserves existing files and pins until confirmed, and clears a cross-release pin', async ({ page }) => {
   await page.evaluate(() => {
+    document.getElementById('artifact-format').value = 'vmdk';
     recipe.digest = 'sha256:' + 'a'.repeat(64);
     recipe.files = { 'files/keep.txt': 'a2VlcA==' };
   });

@@ -4,6 +4,31 @@ Notable changes are recorded here. Work under **Unreleased** has not been publis
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-12
+
+This release refines the workbench and its generated sources, not the validation status of RHEL images. Real OS builds and boot/session testing remain outstanding.
+
+### Changed
+
+- Preselected RHEL 10 in the starting-point flow while retaining explicit RHEL 9 choices and existing saved recipes.
+- Added optional comments to each Install packages step, preserved in drafts and portable exports and emitted as Containerfile comments.
+- Separated recipe field labels from their editor inputs, with a readable Package names label.
+- Simplified the header to one light/dark toggle, retaining system-theme defaults and saved preferences; drafts remain available in workspace navigation and welcome shortcuts.
+- Made the empty draft library a prominent illustrated panel with a direct path back to Compose.
+- Gave the editable image reference a full-size input and clarified that the starter destination is an example, separate from the RHEL base image.
+- Widened the centered workspace to 1440px while preserving compact-screen navigation and layout.
+- Made Compose's image settings, recipe steps and live preview independently collapsible, with ordering guidance tucked into a compact disclosure.
+- Shortened whole-terminal copy controls to "Copy"; they still copy the entire shell block.
+- VMware selections add editable `open-vm-tools` installation and `vmtoolsd` service steps to the OS recipe, with a reminder to rebuild published images.
+- Clarified that disk `config.toml` is build-time initial-user provisioning, not cloud-init user-data.
+- Added icon buttons for starting a recipe and returning to the working copy, plus a non-destructive welcome Reset on destination and review screens.
+- Made Compose, Build, Publish, Boot and Update an interactive lifecycle, distinguishing first installation from subsequent installed-host updates.
+- Added a live Image map of declared packages, file copies, services and builder stages, retaining recipe-order warnings and whole-Containerfile copying.
+- Changed the penguin stamp to "Build with intent" and consolidated the app's Red Hat affiliation notice in the footer.
+- Removed an aspirational pipeline flow that could imply generated boot-testing and signing gates; starters still automate build and publish only.
+- Standalone Containerfile downloads use the saved draft/working-copy name with filesystem-safe filenames; build-folder exports retain the standard `Containerfile` path.
+- Moved Compose downloads out of portable-file options into a visible, responsive handoff above the editor, with a prominent build-folder action, clear file/content descriptions, live filenames and validation status.
+
 ## [0.5.0] - 2026-11-12
 
 The first numbered release versions the Imagecraft workbench, not generated RHEL images. Real OS builds, boot tests and supported-provider runner validation remain outstanding.

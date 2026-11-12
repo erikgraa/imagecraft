@@ -68,6 +68,54 @@ test('artifact formats, public-key config, downloads and command copies are gene
   expect(errors).toEqual([]);
 });
 
+test('VMware defaults are saved in the final OS, stay editable and do not change published image overrides', async ({ page }) => {
+  await page.goto('/?view=build');
+  await step(page, 'install');
+  await page.evaluate(() => {
+    recipe.stages = [{ name: 'builder', base: 'quay.io/example/builder:v1' }];
+    recipe.rows = [
+      { id: 'builder-tools', type: 'packages', stage: 'builder', value: 'open-vm-tools' },
+      { id: 'os-tools', type: 'packages', value: 'httpd curl' },
+    ];
+    changed();
+  });
+  const original = await page.evaluate(() => JSON.stringify(recipe));
+  await page.locator('#artifact-format').selectOption('raw');
+  expect(await page.evaluate(() => JSON.stringify(recipe))).toBe(original);
+  const image = 'quay.io/example/published-os@sha256:' + 'a'.repeat(64);
+  await page.locator('#artifact-image').fill(image);
+  await page.locator('#artifact-format').selectOption('vmdk');
+  const updated = await page.evaluate(() => recipe.rows);
+  expect(updated.map(row => row.id).filter(id => ['builder-tools', 'os-tools'].includes(id))).toEqual(['builder-tools', 'os-tools']);
+  expect(updated.filter(row => !row.stage && row.type === 'packages' && row.value === 'open-vm-tools')).toHaveLength(1);
+  expect(updated.filter(row => !row.stage && row.type === 'service' && row.value === 'vmtoolsd')).toHaveLength(1);
+  await expect(page.locator('#artifact-code')).toContainText(image);
+  await expect(page.locator('#artifact-vmware-help')).toBeVisible();
+  await expect(page.locator('#artifact-vmware-help')).toContainText('Rebuild and publish');
+  const once = await page.evaluate(() => JSON.stringify(recipe));
+  await page.locator('#artifact-format').selectOption('qcow2');
+  await expect(page.locator('#artifact-vmware-help')).toBeHidden();
+  await page.locator('#artifact-format').selectOption('vmdk');
+  expect(await page.evaluate(() => JSON.stringify(recipe))).toBe(once);
+  await page.evaluate(() => navigateView('templates'));
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('[data-template="minimal"]').click();
+  await expect(page.locator('#code')).toContainText('RUN dnf install -y open-vm-tools');
+  await expect(page.locator('#code')).toContainText('RUN systemctl enable vmtoolsd');
+  await page.evaluate(() => navigateView('build'));
+  await step(page, 'install');
+  await page.evaluate(() => {
+    recipe.rows.find(row => row.type === 'service').value = 'vmtoolsd.service';
+    changed();
+  });
+  await page.locator('#artifact-format').selectOption('raw');
+  await page.locator('#artifact-format').selectOption('vmdk');
+  expect(await page.evaluate(() => recipe.rows.filter(row => row.type === 'service').length)).toBe(1);
+  await page.reload();
+  expect(await page.evaluate(() => recipe.rows.filter(row => !row.stage && row.type === 'packages' && row.value === 'open-vm-tools').length)).toBe(1);
+  expect(await page.evaluate(() => recipe.rows.filter(row => row.type === 'service' && row.value === 'vmtoolsd.service').length)).toBe(1);
+});
+
 test('wizard rejects incompatible architecture and secrets without disabling installed-host actions', async ({ page }) => {
   await page.goto('/?view=build');
   await step(page, 'install');
